@@ -31,9 +31,7 @@ namespace Application.Services
             _jwtSettings = jwtSettings.Value;
         }
 
-        // ------------------------------------------------------------
         // LOGIN
-        // ------------------------------------------------------------
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
         {
             var user = await _userRepository.GetByUsernameAsync(request.Username);
@@ -75,9 +73,7 @@ namespace Application.Services
             };
         }
 
-        // ------------------------------------------------------------
         // REFRESH TOKEN
-        // ------------------------------------------------------------
         public async Task<LoginResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request)
         {
             var oldToken = await _refreshTokenRepository.GetByTokenAsync(request.RefreshToken);
@@ -121,9 +117,7 @@ namespace Application.Services
             };
         }
 
-        // ------------------------------------------------------------
         // LOGOUT
-        // ------------------------------------------------------------
         public async Task<bool> RevokeTokenAsync(string token)
         {
             var rt = await _refreshTokenRepository.GetByTokenAsync(token);
@@ -139,9 +133,7 @@ namespace Application.Services
             return true;
         }
 
-        // ------------------------------------------------------------
         // REGISTER
-        // ------------------------------------------------------------
         public async Task<UserDto> RegisterAsync(RegisterRequestDto request)
         {
             if (await _userRepository.ExistsByUsernameAsync(request.Username))
@@ -166,10 +158,8 @@ namespace Application.Services
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
-            // --------------------------------------------------------
-            // Asignar roles por defecto (ADMIN, VENDEDOR, CLIENTE)
-            // --------------------------------------------------------
-            var rolesToAssign = request.Roles?.ToList() ?? new List<string> { "User" };
+            // Asignar roles (ADMIN, VENDEDOR, CLIENTE)
+            var rolesToAssign = request.Roles.ToList();
 
             foreach (var roleName in rolesToAssign)
             {

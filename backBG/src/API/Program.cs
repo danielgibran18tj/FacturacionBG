@@ -117,13 +117,22 @@ namespace API
                 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
                 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+                builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+                builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+                builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+                builder.Services.AddScoped<IProductRepository, ProductRepository>();
                 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
                 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
                 builder.Services.AddScoped<ISystemSettingRepository, SystemSettingRepository>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
                 builder.Services.AddScoped<IAuthService, AuthService>();
+                builder.Services.AddScoped<ICustomerService, CustomerService>();
+                builder.Services.AddScoped<IInvoiceService, InvoiceService>();
                 builder.Services.AddScoped<IJwtService, JwtService>();
+                builder.Services.AddScoped<IProductService, ProductService>();
+                builder.Services.AddScoped<ISystemSettingService, SystemSettingService>();
+                builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
                 // CONFIGURACION DE CORS
                 builder.Services.AddCors(options =>

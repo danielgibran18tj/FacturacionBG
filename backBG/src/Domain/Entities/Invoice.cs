@@ -35,5 +35,5 @@ public partial class Invoice
 
     public virtual ICollection<InvoicePaymentMethod> InvoicePaymentMethods { get; set; } = new List<InvoicePaymentMethod>();
 
-    public virtual User Seller { get; set; } = new User();
+    public virtual User Seller { get; set; } = null!;
 }
