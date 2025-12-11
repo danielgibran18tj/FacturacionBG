@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Mappings;
+using Application.DTOs;
 using Application.DTOs.Invoice;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -159,16 +160,26 @@ namespace Application.Services
             return list.Select(i => i.ToDto()).ToList();
         }
 
-        public async Task<List<InvoiceDto>> SearchAsync(InvoiceSearchDto dto)
+        public async Task<PagedResult<InvoiceDto>> GetPagedAsync(InvoicePagedSearchDto request)
         {
-            var list = await _invoiceRepo.SearchAsync(
-                dto.SearchTerm ?? "",
-                dto.StartDate,
-                dto.EndDate,
-                dto.MinAmount,
-                dto.MaxAmount
+            var pagedData = await _invoiceRepo.GetPagedAsync(
+                request.Page,
+                request.PageSize,
+                request.SearchTerm,
+                request.StartDate,
+                request.EndDate,
+                request.MinAmount,
+                request.MaxAmount
             );
-            return list.Select(i => i.ToDto()).ToList();
+
+            return new PagedResult<InvoiceDto>
+            {
+                Items = pagedData.Items.Select(i => i.ToDto()).ToList(),
+                TotalItems = pagedData.TotalItems,
+                TotalPages = pagedData.TotalPages,
+                Page = request.Page,
+                PageSize = request.PageSize
+            };
         }
     }
 }

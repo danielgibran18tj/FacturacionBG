@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -82,45 +83,6 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Invoice>> SearchAsync(
-            string searchTerm,
-            DateTime? startDate = null,
-            DateTime? endDate = null,
-            decimal? minAmount = null,
-            decimal? maxAmount = null)
-        {
-            var query = _context.Invoices
-                .Include(i => i.Customer)
-                .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(searchTerm))
-            {
-                searchTerm = searchTerm.ToLower();
-
-                query = query.Where(i =>
-                    i.InvoiceNumber.ToLower().Contains(searchTerm) ||
-                    (i.Customer != null && i.Customer.FullName.ToLower().Contains(searchTerm))
-                );
-            }
-
-            if (startDate.HasValue)
-                query = query.Where(i => i.InvoiceDate >= startDate);
-
-            if (endDate.HasValue)
-                query = query.Where(i => i.InvoiceDate <= endDate);
-
-            if (minAmount.HasValue)
-                query = query.Where(i => i.Total >= minAmount);
-
-            if (maxAmount.HasValue)
-                query = query.Where(i => i.Total <= maxAmount);
-
-            return await query
-                .OrderByDescending(i => i.InvoiceDate)
-                .Take(200)
-                .ToListAsync();
-        }
-
         public async Task<Invoice> AddAsync(Invoice invoice)
         {
             await _context.Invoices.AddAsync(invoice);
@@ -160,6 +122,52 @@ namespace Infrastructure.Repositories
         public async Task AddPaymentAsync(InvoicePaymentMethod payment)
         {
             await _context.InvoicePaymentMethods.AddAsync(payment);
+        }
+
+        public async Task<PagedResult<Invoice>> GetPagedAsync(int page, int pageSize, string? search = null, 
+            DateTime? start = null, DateTime? end = null, decimal? min = null, decimal? max = null)
+        {
+            var query = _context.Invoices
+                .Include(i => i.Customer)
+                .Include(i => i.Seller)
+                .Include(i => i.InvoiceDetails).ThenInclude(d => d.Product)
+                .Include(i => i.InvoicePaymentMethods).ThenInclude(pm => pm.PaymentMethod)
+                .AsQueryable();
+
+            // ---- FILTROS ----
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(i =>
+                    i.InvoiceNumber.Contains(search) ||
+                    i.Customer.FullName.Contains(search) ||
+                    i.Customer.DocumentNumber.Contains(search) ||
+                    i.Seller.Username.Contains(search)
+                );
+            }
+
+            if (start.HasValue) query = query.Where(i => i.InvoiceDate >= start);
+            if (end.HasValue) query = query.Where(i => i.InvoiceDate <= end);
+            if (min.HasValue) query = query.Where(i => i.Total >= min);
+            if (max.HasValue) query = query.Where(i => i.Total <= max);
+
+            // ---- TOTAL ----
+            var totalItems = await query.CountAsync();
+
+            // ---- PAGINACIÓN ----
+            var items = await query
+                .OrderByDescending(i => i.InvoiceDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Invoice>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
+                Page = page,
+                PageSize = pageSize
+            };
         }
     }
 }

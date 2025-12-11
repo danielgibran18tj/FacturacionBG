@@ -2,6 +2,7 @@
 using Application.DTOs.Invoice;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -54,10 +55,12 @@ namespace API.Controllers
             return Ok(await _invoiceService.GetBySellerAsync(sellerId));
         }
 
-        [HttpPost("search")]
-        public async Task<IActionResult> Search([FromBody] InvoiceSearchDto dto)
+        [HttpPost("paged")]
+        public async Task<IActionResult> GetPaged([FromBody] InvoicePagedSearchDto request)
         {
-            return Ok(await _invoiceService.SearchAsync(dto));
+            var result = await _invoiceService.GetPagedAsync(request);
+            return Ok(result);
         }
+
     }
 }

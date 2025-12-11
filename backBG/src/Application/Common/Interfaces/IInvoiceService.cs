@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Invoice;
+﻿using Application.DTOs;
+using Application.DTOs.Invoice;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace Application.Common.Interfaces
     public interface IInvoiceService
     {
         Task<InvoiceDto> CreateInvoiceAsync(CreateInvoiceDto dto);
+        Task<PagedResult<InvoiceDto>> GetPagedAsync(InvoicePagedSearchDto request);
         Task<InvoiceDto?> GetByIdAsync(int id);
         Task<List<InvoiceDto>> GetAllAsync();
         Task<List<InvoiceDto>> GetByCustomerAsync(int customerId);
         Task<List<InvoiceDto>> GetBySellerAsync(int sellerId);
-        Task<List<InvoiceDto>> SearchAsync(InvoiceSearchDto dto);
     }
 }

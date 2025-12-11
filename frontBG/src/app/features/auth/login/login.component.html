@@ -1,0 +1,157 @@
+<div class="d-flex flex-column justify-content-center align-items-center vh-100 p-4">
+  <div class="card shadow-lg border-0" style="max-width: 480px; width: 100%;">
+    <div class="card-body p-5">
+      
+      <!-- Logo Banco Guayaquil -->
+      <div class="text-center mb-4">
+        <div class="bg-bg-magenta rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-lg" 
+             style="width: 90px; height: 90px;">
+             <img src="assets/images/logo-banco-guayaquil.png" alt="Banco Guayaquil" style="width: 60px; height: auto;">
+        </div>
+        <h1 class="fw-bold text-bg-magenta mb-1" style="font-size: 1.9rem;">Banco Guayaquil</h1>
+        <p class="text-muted fw-semibold mb-0" style="font-size: 1.1rem;">Primero tú</p>
+      </div>
+
+      <!-- Alertas -->
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 border-0" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>{{ errorMessage }}</span>
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 border-0" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span>{{ successMessage }}</span>
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+
+      <!-- Título del formulario -->
+      <div class="mb-4">
+        <h5 class="text-bg-magenta fw-bold">Ingresa a tu cuenta</h5>
+        <p class="text-muted small mb-0">Accede a tu banca en línea de forma segura</p>
+      </div>
+
+      <!-- Formulario -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Usuario -->
+        <div class="mb-3">
+          <label for="username" class="form-label fw-semibold text-bg-magenta d-flex align-items-center gap-2">
+            <i class="bi bi-person-circle"></i> Usuario
+          </label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control form-control-lg border-2"
+            [class.is-invalid]="isFieldInvalid('username')"
+            [class.border-bg-magenta]="loginForm.get('username')?.valid"
+            placeholder="Ingresa tu usuario"
+          />
+          <div *ngIf="isFieldInvalid('username')" class="invalid-feedback">
+            <small *ngIf="loginForm.get('username')?.hasError('required')">
+              El usuario es requerido
+            </small>
+            <small *ngIf="loginForm.get('username')?.hasError('minlength')">
+              Mínimo 3 caracteres
+            </small>
+          </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="mb-4">
+          <label for="password" class="form-label fw-semibold text-bg-magenta d-flex align-items-center gap-2">
+            <i class="bi bi-shield-lock-fill"></i> Contraseña
+          </label>
+          <div class="input-group input-group-lg">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="form-control border-2 border-end-0"
+              [class.is-invalid]="isFieldInvalid('password')"
+              [class.border-bg-magenta]="loginForm.get('password')?.valid"
+              placeholder="Ingresa tu contraseña"
+            />
+            <span 
+              class="input-group-text bg-white border-2 border-start-0 cursor-pointer"
+              [class.border-danger]="isFieldInvalid('password')"
+              [class.border-bg-magenta]="loginForm.get('password')?.valid"
+              (click)="togglePassword()"
+            >
+              <i [class]="showPassword ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" 
+                 class="text-bg-magenta"></i>
+            </span>
+          </div>
+          <div *ngIf="isFieldInvalid('password')" class="invalid-feedback d-block">
+            <small *ngIf="loginForm.get('password')?.hasError('required')">
+              La contraseña es requerida
+            </small>
+            <small *ngIf="loginForm.get('password')?.hasError('minlength')">
+              Mínimo 6 caracteres
+            </small>
+          </div>
+        </div>
+
+        <!-- Botón Ingresar -->
+        <button
+          type="submit"
+          class="btn btn-bg-magenta w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2 mb-3 shadow"
+          style="font-size: 1.1rem; border-radius: 12px;"
+          [disabled]="loading || loginForm.invalid"
+        >
+          <span *ngIf="!loading" class="d-flex align-items-center gap-2">
+            <i class="bi bi-box-arrow-in-right"></i> Ingresar
+          </span>
+          <span *ngIf="loading" class="d-flex align-items-center gap-2">
+            <span class="spinner-border spinner-border-sm" role="status"></span>
+            Ingresando...
+          </span>
+        </button>
+
+        <!-- Botón Registrarse -->
+        <button
+          type="button"
+          class="btn btn-outline-bg-magenta w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2"
+          style="border-radius: 12px;"
+          routerLink="/register"
+        >
+          <i class="bi bi-person-plus-fill"></i>
+          Crear cuenta nueva
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="position-relative my-4">
+        <hr>
+      </div>
+
+      <!-- Info de prueba -->
+      <div class="text-center p-3 rounded" style="background: linear-gradient(135deg, #fff0f6 0%, #ffe8f3 100%);">
+        <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+          <i class="bi bi-info-circle-fill text-bg-magenta"></i>
+          <strong class="text-bg-magenta">Credenciales de prueba</strong>
+        </div>
+        <div class="bg-white p-2 rounded border-2 border-bg-magenta">
+          <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+            <i class="bi bi-person-badge text-bg-magenta"></i>
+            <code class="text-bg-magenta fw-bold">admin</code>
+          </div>
+          <div class="d-flex align-items-center justify-content-center gap-2">
+            <i class="bi bi-key-fill text-bg-magenta"></i>
+            <code class="text-bg-magenta fw-bold">Admin123!</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer de seguridad -->
+      <div class="text-center mt-4">
+        <small class="text-muted d-flex align-items-center justify-content-center gap-2">
+          <i class="bi bi-shield-check text-bg-magenta"></i>
+          Conexión segura SSL/TLS
+        </small>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm"
+     style="background: linear-gradient(90deg, #d4145a 0%, #ff1a75 100%);">
+  <div class="container-fluid px-4">
+
+    <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+      <i class="bi bi-bank2 fs-4"></i>
+      <div>
+        <span class="fw-bold d-block">Banco Guayaquil</span>
+        <small style="font-size: 0.7rem;">Primero tú</small>
+      </div>
+    </a>
+
+    <button class="navbar-toggler" type="button" 
+            data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      
+      <ul class="navbar-nav ms-4 gap-lg-3 gap-1">
+        <li class="nav-item"><a class="nav-link text-white" routerLink="/inicio"><i class="bi bi-house"></i> Inicio</a></li>
+        <li class="nav-item"><a class="nav-link text-white" routerLink="/dashboard/facturas"><i class="bi bi-receipt"></i> Facturas</a></li>
+        <li class="nav-item"><a class="nav-link text-white" routerLink="/productos"><i class="bi bi-box"></i> Productos</a></li>
+        <li class="nav-item"><a class="nav-link text-white" routerLink="/clientes"><i class="bi bi-people"></i> Clientes</a></li>
+        <li class="nav-item"><a class="nav-link text-white" routerLink="/usuarios"><i class="bi bi-person"></i> Usuarios</a></li>
+        <li class="nav-item"><a class="nav-link text-white" routerLink="/configuracion"><i class="bi bi-gear"></i> Configuración</a></li>
+      </ul>
+
+    </div>
+
+    <div class="d-flex align-items-center gap-3 ms-auto">
+      <div class="text-white d-none d-md-block">
+        <i class="bi bi-person-circle"></i>
+        <span class="ms-2">{{ currentUser?.firstName || currentUser?.username }}</span>
+      </div>
+      <button class="btn btn-light btn-sm d-flex align-items-center gap-2 shadow-sm" 
+              (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        <span class="d-none d-md-inline">Cerrar Sesión</span>
+      </button>
+    </div>
+
+  </div>
+</nav>
+
+
+<div class="container-fluid py-4" style="background: #f8f9fa; min-height: calc(100vh - 64px);">
+  <router-outlet></router-outlet>
+</div>

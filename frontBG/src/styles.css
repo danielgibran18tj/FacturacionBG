@@ -1,0 +1,80 @@
+/* Importar Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-magenta: #d4145a;
+  --bg-magenta-dark: #a31149;
+  --bg-magenta-light: #ff1a75;
+  --bg-white: #ffffff;
+  --bg-gray: #f5f5f5;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #d4145a 0%, #ff1a75 100%);
+  min-height: 100vh;
+}
+
+/* Botones personalizados Banco Guayaquil */
+.btn-bg-magenta {
+  background-color: var(--bg-magenta);
+  border-color: var(--bg-magenta);
+  color: white;
+  font-weight: 600;
+}
+
+.btn-bg-magenta:hover {
+  background-color: var(--bg-magenta-dark);
+  border-color: var(--bg-magenta-dark);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 20, 90, 0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-outline-bg-magenta {
+  background-color: transparent;
+  border: 2px solid var(--bg-magenta);
+  color: var(--bg-magenta);
+  font-weight: 600;
+}
+
+.btn-outline-bg-magenta:hover {
+  background-color: var(--bg-magenta);
+  border-color: var(--bg-magenta);
+  color: white;
+}
+
+.text-bg-magenta {
+  color: var(--bg-magenta);
+}
+
+.bg-bg-magenta {
+  background-color: var(--bg-magenta);
+}
+
+.border-bg-magenta {
+  border-color: var(--bg-magenta) !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Animación suave para cards */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}

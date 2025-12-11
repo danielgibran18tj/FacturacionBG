@@ -110,7 +110,7 @@ namespace API.Controllers
 
         // Cerrar sesión (revocar token)
         [HttpPost("logout")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<ActionResult<ApiResponse<bool>>> Logout([FromBody] RefreshTokenRequestDto request)
         {
             var userClaims = User.Claims;

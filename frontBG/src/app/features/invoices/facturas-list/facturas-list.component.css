@@ -1,0 +1,22 @@
+
+.card-header {
+  border-bottom: 2px solid #d4145a40;
+}
+
+table thead {
+  border-bottom: 2px solid #d4145a30;
+}
+
+th {
+  font-weight: 600;
+}
+
+.btn-primary,
+.btn-outline-primary:hover {
+  background: #d4145a !important;
+  border-color: #d4145a !important;
+}
+
+.badge.bg-success {
+  background-color: #28a745 !important;
+}

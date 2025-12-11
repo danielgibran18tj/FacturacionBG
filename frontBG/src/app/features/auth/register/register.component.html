@@ -1,0 +1,215 @@
+<div class="d-flex flex-column justify-content-center align-items-center vh-100 p-4">
+  
+  <div class="card shadow-lg border-0" style="max-width: 600px; width: 100%;">
+    <div class="card-body p-5">
+      
+      <div class="text-center mb-4">
+        <div class="bg-bg-magenta rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-lg" 
+             style="width: 80px; height: 80px;">
+          <i class="bi bi-person-plus text-white" style="font-size: 2.5rem;"></i>
+        </div>
+        <h2 class="fw-bold text-bg-magenta mb-1">Crear Cuenta</h2>
+        <p class="text-muted">Únete a Banco Guayaquil - Primero tú</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show border-0" role="alert">
+        <div class="d-flex align-items-start gap-2">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span [innerHTML]="errorMessage"></span>
+        </div>
+        <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName" class="form-label fw-semibold text-bg-magenta">
+              <i class="bi bi-person"></i> Nombre
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              formControlName="firstName"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('firstName')"
+              [class.border-bg-magenta]="registerForm.get('firstName')?.valid"
+              placeholder="Ej: Juan"
+            />
+            <div *ngIf="isFieldInvalid('firstName')" class="invalid-feedback">
+              El nombre es requerido
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="lastName" class="form-label fw-semibold text-bg-magenta">
+              <i class="bi bi-person-fill"></i> Apellido
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              formControlName="lastName"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('lastName')"
+              [class.border-bg-magenta]="registerForm.get('lastName')?.valid"
+              placeholder="Ej: Pérez"
+            />
+            <div *ngIf="isFieldInvalid('lastName')" class="invalid-feedback">
+              El apellido es requerido
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="username" class="form-label fw-semibold text-bg-magenta">
+            <i class="bi bi-at"></i> Usuario
+          </label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('username')"
+            [class.border-bg-magenta]="registerForm.get('username')?.valid"
+            placeholder="Ej: juanperez"
+          />
+          <div *ngIf="isFieldInvalid('username')" class="invalid-feedback">
+            <small *ngIf="registerForm.get('username')?.hasError('required')">
+              El usuario es requerido
+            </small>
+            <small *ngIf="registerForm.get('username')?.hasError('minlength')">
+              Mínimo 3 caracteres
+            </small>
+            <small *ngIf="registerForm.get('username')?.hasError('pattern')">
+              Solo letras, números, guiones y guiones bajos
+            </small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label fw-semibold text-bg-magenta">
+            <i class="bi bi-envelope-fill"></i> Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('email')"
+            [class.border-bg-magenta]="registerForm.get('email')?.valid"
+            placeholder="juan@ejemplo.com"
+          />
+          <div *ngIf="isFieldInvalid('email')" class="invalid-feedback">
+            <small *ngIf="registerForm.get('email')?.hasError('required')">
+              El email es requerido
+            </small>
+            <small *ngIf="registerForm.get('email')?.hasError('email')">
+              Email inválido
+            </small>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label fw-semibold text-bg-magenta">
+            <i class="bi bi-key-fill"></i> Contraseña
+          </label>
+          <div class="input-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('password')"
+              [class.border-bg-magenta]="registerForm.get('password')?.valid"
+              placeholder="Mínimo 8 caracteres"
+            />
+            <span 
+              class="input-group-text bg-white border-start-0 cursor-pointer"
+              [class.border-danger]="isFieldInvalid('confirmPassword') || registerForm.hasError('passwordMismatch')"
+              [class.border-bg-magenta]="registerForm.get('confirmPassword')?.valid && !registerForm.hasError('passwordMismatch')"
+              (click)="togglePassword()"
+            >
+              <i [class]="showPassword ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" 
+                 class="text-bg-magenta"></i>
+            </span>
+          </div>
+          <div *ngIf="isFieldInvalid('password')" class="invalid-feedback">
+            <small *ngIf="registerForm.get('password')?.hasError('required')">
+              La contraseña es requerida
+            </small>
+            <small *ngIf="registerForm.get('password')?.hasError('minlength')">
+              Mínimo 8 caracteres
+            </small>
+            <small *ngIf="registerForm.get('password')?.hasError('pattern')">
+              Debe contener: mayúscula, minúscula, número y carácter especial
+            </small>
+          </div>
+          <small class="text-muted d-block mt-1">
+            <i class="bi bi-info-circle text-bg-magenta"></i>
+            La contraseña debe tener mayúscula, minúscula, número y carácter especial
+          </small>
+        </div>
+
+        <div class="mb-4">
+          <label for="confirmPassword" class="form-label fw-semibold text-bg-magenta">
+            <i class="bi bi-shield-check"></i> Confirmar Contraseña
+          </label>
+          <div class="input-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              class="form-control border-end-0"
+              [class.is-invalid]="isFieldInvalid('confirmPassword') || registerForm.hasError('passwordMismatch')"
+              [class.border-bg-magenta]="registerForm.get('confirmPassword')?.valid && !registerForm.hasError('passwordMismatch')"
+              placeholder="Repite tu contraseña"
+            />
+            <span 
+              class="input-group-text bg-white border-start-0 cursor-pointer"
+              [class.border-danger]="isFieldInvalid('confirmPassword') || registerForm.hasError('passwordMismatch')"
+              [class.border-bg-magenta]="registerForm.get('confirmPassword')?.valid && !registerForm.hasError('passwordMismatch')"
+              (click)="togglePassword()"
+            >
+              <i [class]="showPassword ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" 
+                 class="text-bg-magenta"></i>
+            </span>
+          </div>
+          <div *ngIf="isFieldInvalid('confirmPassword') || registerForm.hasError('passwordMismatch')" 
+               class="invalid-feedback d-block">
+            <small *ngIf="registerForm.get('confirmPassword')?.hasError('required')">
+              Debes confirmar tu contraseña
+            </small>
+            <small *ngIf="registerForm.hasError('passwordMismatch')">
+              Las contraseñas no coinciden
+            </small>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-bg-magenta w-100 py-3 fw-bold d-flex align-items-center justify-content-center gap-2 mb-3 shadow"
+          style="border-radius: 12px;"
+          [disabled]="loading || registerForm.invalid"
+        >
+          <span *ngIf="!loading">
+            <i class="bi bi-check-circle-fill"></i> Crear Cuenta
+          </span>
+          <span *ngIf="loading" class="d-flex align-items-center gap-2">
+            <span class="spinner-border spinner-border-sm" role="status"></span>
+            Registrando...
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-bg-magenta w-100 py-2 fw-semibold"
+          style="border-radius: 12px;"
+          routerLink="/login"
+        >
+          <i class="bi bi-arrow-left-circle"></i> Volver al Login
+        </button>
+      </form>
+
+    </div>
+  </div>
+</div>
