@@ -25,7 +25,9 @@ namespace Infrastructure.Repositories
 
         public async Task<Invoice?> GetByIdAsync(int id)
         {
-            return await _context.Invoices.FindAsync(id);
+            return await _context.Invoices
+                .FirstOrDefaultAsync(i => i.Id == id);
+
         }
 
         public async Task<Invoice?> GetByIdWithDetailsAsync(int id)
@@ -149,6 +151,7 @@ namespace Infrastructure.Repositories
             if (end.HasValue) query = query.Where(i => i.InvoiceDate <= end);
             if (min.HasValue) query = query.Where(i => i.Total >= min);
             if (max.HasValue) query = query.Where(i => i.Total <= max);
+            query = query.Where(i => i.Status == "Active");
 
             // ---- TOTAL ----
             var totalItems = await query.CountAsync();

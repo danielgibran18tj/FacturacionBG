@@ -1,0 +1,22 @@
+<div class="modal-backdrop-custom" (click)="close.emit()"></div>
+
+<div class="modal-dialog-custom">
+  <div class="modal-content">
+
+    <div class="modal-header bg-danger text-white">
+      <h5 class="modal-title">Eliminar Factura</h5>
+      <button type="button" class="btn-close" (click)="close.emit()"></button>
+    </div>
+
+    <div class="modal-body">
+      <p>¿Está seguro que desea eliminar la factura:</p>
+      <p class="fw-bold">{{ invoice?.invoiceNumber }}</p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="close.emit()">Cancelar</button>
+      <button class="btn btn-danger" (click)="onConfirm()">Eliminar</button>
+    </div>
+
+  </div>
+</div>

@@ -62,5 +62,25 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> LogicalDelete(int id)
+        {
+            var success = await _invoiceService.LogicalDeleteAsync(id);
+            if (!success)
+                return NotFound(new { message = "Invoice not found" });
+            return Ok(new { message = "Invoice deleted (logical delete)" });
+        }
+
+
+        [HttpGet("{id}/pdf")]
+        public async Task<IActionResult> GetInvoicePdf(int id)
+        {
+            var pdfBytes = await _invoiceService.GenerateInvoicePdfAsync(id);
+
+            if (pdfBytes == null)
+                return NotFound("Factura no encontrada");
+
+            return File(pdfBytes, "application/pdf", $"Factura-{id}.pdf");
+        }
     }
 }

@@ -12,11 +12,18 @@ export class InvoiceService {
   constructor(private http: HttpClient) { }
 
 
-   getPagedInvoices(body: any): Observable<any> {
-    console.log(this.API_URL);
-    
-    return this.http.post<any>(this.API_URL + "/Invoice/paged" , body);
+  getPagedInvoices(body: any): Observable<any> {
+    return this.http.post<any>(this.API_URL + "/Invoice/paged", body);
   }
 
+  downloadInvoicePdf(id: number) {
+    return this.http.get(this.API_URL + `/Invoice/${id}/pdf`, {
+      responseType: 'blob'
+    });
+  }
+
+  delete(id: number) {
+    return this.http.delete(`/api/Invoice/${id}`);
+  }
 
 }

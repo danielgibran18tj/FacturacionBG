@@ -1,6 +1,7 @@
 using API.Middleware;
 using Application.Common.Interfaces;
 using Application.Common.Settings;
+using Application.DTOs;
 using Application.Services;
 using Application.Validators;
 using Domain.Interfaces;
@@ -133,6 +134,9 @@ namespace API
                 builder.Services.AddScoped<IProductService, ProductService>();
                 builder.Services.AddScoped<ISystemSettingService, SystemSettingService>();
                 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+                builder.Services.Configure<CompanySettings>(builder.Configuration.GetSection("CompanySettings"));
+
 
                 // CONFIGURACION DE CORS
                 builder.Services.AddCors(options =>
