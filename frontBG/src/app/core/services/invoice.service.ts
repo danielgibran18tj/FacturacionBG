@@ -26,4 +26,7 @@ export class InvoiceService {
     return this.http.delete(`/api/Invoice/${id}`);
   }
 
+  saveInvoices(body: any): Observable<any> {
+    return this.http.post<any>(this.API_URL + "/api/Invoice", body);
+  }
 }

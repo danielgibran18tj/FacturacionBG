@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Invoice;
+using Domain.DTOs;
 
 namespace Application.Common.Interfaces
 {

@@ -5,21 +5,6 @@ namespace Application.Common.Mappings
 {
     public static class CustomerMapper
     {
-        public static CustomerDto ToDto(this Customer customer)
-        {
-            return new CustomerDto
-            {
-                Id = customer.Id,
-                DocumentNumber = customer.DocumentNumber,
-                FullName = customer.FullName,
-                Phone = customer.Phone,
-                Email = customer.Email,
-                Address = customer.Address,
-                HasUserAccount = customer.UserId.HasValue,
-                Username = customer.User?.Username,
-                IsActive = customer.IsActive
-            };
-        }
 
         public static Customer ToEntity(this CreateCustomerDto dto)
         {
@@ -30,8 +15,7 @@ namespace Application.Common.Mappings
                 Phone = dto.Phone,
                 Email = dto.Email,
                 Address = dto.Address,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                IsActive = true
             };
         }
 

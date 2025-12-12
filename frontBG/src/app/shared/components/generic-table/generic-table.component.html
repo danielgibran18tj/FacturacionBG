@@ -1,0 +1,66 @@
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th *ngFor="let col of columns" [class.text-center]="col.textAlign === 'center'" [class.text-end]="col.textAlign === 'right'">
+          {{ col.label }}
+        </th>
+        <th class="text-center" *ngIf="actions.length > 0">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of data">
+        <td *ngFor="let col of columns" [class.text-center]="col.textAlign === 'center'" [class.text-end]="col.textAlign === 'right'">
+
+          <ng-container [ngSwitch]="col.type">
+            <span *ngSwitchCase="'status'">
+              <span class="badge bg-success" *ngIf="getCellValue(item, col) === 'Active'">Pagada</span>
+              <span class="badge bg-warning text-dark" *ngIf="getCellValue(item, col) !== 'Active'">Pendiente</span>
+            </span>
+
+            <ng-container *ngSwitchCase="'date'">
+              {{ getCellValue(item, col) | date: (col.format || 'dd/MM/yyyy') }}
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'number'">
+              {{ getCellValue(item, col) | number: (col.format || '1.2-2') }}
+            </ng-container>
+
+            <ng-container *ngSwitchDefault>
+              {{ getCellValue(item, col) }}
+            </ng-container>
+          </ng-container>
+
+        </td>
+
+        <td class="text-center" *ngIf="actions.length > 0">
+          <button *ngFor="let actionDef of actions"
+            class="btn btn-sm mb-1 me-1 {{ actionDef.class }}"
+            (click)="handleActionClick(actionDef.action, item)">
+            <i class="bi {{ actionDef.icon }}"></i> {{ actionDef.label }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<nav *ngIf="totalPages > 1">
+  <ul class="pagination justify-content-center">
+
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="changePage(currentPage - 1)">Anterior</button>
+    </li>
+
+    <li class="page-item" *ngFor="let p of getPagesArray(); let i = index"
+      [class.active]="currentPage === (i + 1)">
+      <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+    </li>
+
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <button class="page-link" (click)="changePage(currentPage + 1)">Siguiente</button>
+    </li>
+
+  </ul>
+</nav>

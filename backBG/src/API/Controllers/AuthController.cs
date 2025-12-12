@@ -65,6 +65,11 @@ namespace API.Controllers
         {
             _logger.LogInformation("Intento de registro para usuario: {Username}", request.Username);
 
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+                
             var validationResult = await _registerValidator.ValidateAsync(request);
             if (!validationResult.IsValid)
             {

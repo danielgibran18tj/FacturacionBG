@@ -151,7 +151,6 @@ namespace Infrastructure.Repositories
             if (end.HasValue) query = query.Where(i => i.InvoiceDate <= end);
             if (min.HasValue) query = query.Where(i => i.Total >= min);
             if (max.HasValue) query = query.Where(i => i.Total <= max);
-            query = query.Where(i => i.Status == "Active");
 
             // ---- TOTAL ----
             var totalItems = await query.CountAsync();
@@ -172,5 +171,6 @@ namespace Infrastructure.Repositories
                 PageSize = pageSize
             };
         }
+
     }
 }

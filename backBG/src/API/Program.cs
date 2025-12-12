@@ -116,6 +116,7 @@ namespace API
 
                 // INYECCION DE DEPENDENCIAS
                 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+                builder.Services.AddAutoMapper(typeof(MapperProfile));
 
                 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
                 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -128,6 +129,7 @@ namespace API
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
                 builder.Services.AddScoped<IAuthService, AuthService>();
+                builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
                 builder.Services.AddScoped<ICustomerService, CustomerService>();
                 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
                 builder.Services.AddScoped<IJwtService, JwtService>();

@@ -2,6 +2,7 @@
 using Application.Common.Mappings;
 using Application.DTOs;
 using Application.DTOs.Invoice;
+using Domain.DTOs;
 using Domain.Entities;
 using Domain.Interfaces;
 using iText.IO.Font.Constants;

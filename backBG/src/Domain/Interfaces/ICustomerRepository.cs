@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs;
+using Domain.Entities;
 
 namespace Domain.Interfaces
 {
@@ -8,7 +9,7 @@ namespace Domain.Interfaces
         Task<Customer?> GetByDocumentNumberAsync(string documentNumber);
         Task<Customer?> GetByUserIdAsync(int userId);
         Task<List<Customer>> GetAllAsync(bool includeInactive = false);
-        Task<List<Customer>> SearchAsync(string searchTerm);
+        Task<PagedResult<Customer>> GetPagedAsync(int page, int pageSize, string? search = null);
         Task<Customer> AddAsync(Customer customer);
         Task UpdateAsync(Customer customer);
         Task<bool> ExistsByDocumentNumberAsync(string documentNumber);

@@ -156,7 +156,7 @@
           </label>
           <div class="input-group">
             <input
-              [type]="showPassword ? 'text' : 'password'"
+              [type]="showConfirmPassword ? 'text' : 'password'"
               id="confirmPassword"
               formControlName="confirmPassword"
               class="form-control border-end-0"
@@ -168,9 +168,9 @@
               class="input-group-text bg-white border-start-0 cursor-pointer"
               [class.border-danger]="isFieldInvalid('confirmPassword') || registerForm.hasError('passwordMismatch')"
               [class.border-bg-magenta]="registerForm.get('confirmPassword')?.valid && !registerForm.hasError('passwordMismatch')"
-              (click)="togglePassword()"
+              (click)="toggleConfirmPassword()"
             >
-              <i [class]="showPassword ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" 
+              <i [class]="showConfirmPassword ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" 
                  class="text-bg-magenta"></i>
             </span>
           </div>

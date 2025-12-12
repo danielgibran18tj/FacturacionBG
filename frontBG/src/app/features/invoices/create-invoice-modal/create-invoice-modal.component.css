@@ -1,0 +1,13 @@
+.custom-modal {
+  background: rgba(0,0,0,0.55);
+}
+
+.section-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #d4145a;
+}
+
+.modal-dialog-slide {
+  animation: slideIn .3s ease-out;
+}

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -57,19 +58,42 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Customer>> SearchAsync(string searchTerm)
+        public async Task<PagedResult<Customer>> GetPagedAsync(int page, int pageSize, string? search = null)
         {
-            _logger.LogDebug("Searching customers with term: {SearchTerm}", searchTerm);
+            var query = _context.Customers
+                .Include(i => i.User)
+                .AsQueryable();
 
-            return await _context.Customers
-                .Where(c => c.IsActive &&
-                    (c.FullName.Contains(searchTerm) ||
-                     c.DocumentNumber.Contains(searchTerm) ||
-                     (c.Email != null && c.Email.Contains(searchTerm)) ||
-                     (c.Phone != null && c.Phone.Contains(searchTerm))))
-                .OrderBy(c => c.FullName)
-                .Take(50)
+            // ---- FILTROS ----
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(c =>
+                    c.IsActive &&
+                    c.DocumentNumber.Contains(search) ||
+                    c.FullName.Contains(search) ||
+                    (c.Email != null && c.Email.Contains(search)) ||
+                    (c.Phone != null && c.Phone.Contains(search))
+                );
+            }
+
+            // ---- TOTAL ----
+            var totalItems = await query.CountAsync();
+
+            // ---- PAGINACIÓN ----
+            var items = await query
+                .OrderByDescending(i => i.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return new PagedResult<Customer>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
+                Page = page,
+                PageSize = pageSize
+            };
         }
 
         public async Task<Customer> AddAsync(Customer customer)

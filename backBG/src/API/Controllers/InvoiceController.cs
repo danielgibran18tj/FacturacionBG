@@ -58,6 +58,11 @@ namespace API.Controllers
         [HttpPost("paged")]
         public async Task<IActionResult> GetPaged([FromBody] InvoicePagedSearchDto request)
         {
+            var roles = User.Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
+
             var result = await _invoiceService.GetPagedAsync(request);
             return Ok(result);
         }

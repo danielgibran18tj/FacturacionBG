@@ -15,6 +15,7 @@ export class RegisterComponent {
   registerForm!: FormGroup;
   loading = false;
   showPassword = false;
+  showConfirmPassword = false;
   errorMessage = '';
 
   constructor(
@@ -95,6 +96,10 @@ export class RegisterComponent {
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   isFieldInvalid(fieldName: string): boolean {

@@ -5,36 +5,44 @@ import { FormsModule } from '@angular/forms';
 import { Invoice } from '../../../core/models/invoice.model';
 import { InvoiceDetailsModalComponent } from "../invoice-details-modal/invoice-details-modal.component";
 import { DeleteConfirmModalComponent } from "../delete-confirm-modal/delete-confirm-modal.component";
+import { ActionDefinition, ColumnDefinition } from '../../../core/models/table-generica.model';
+import { GenericTableComponent } from "../../../shared/components/generic-table/generic-table.component";
+import { CreateInvoiceModalComponent } from "../create-invoice-modal/create-invoice-modal.component";
 
 @Component({
   selector: 'app-facturas-list',
-  imports: [CommonModule, FormsModule, InvoiceDetailsModalComponent, DeleteConfirmModalComponent],
+  imports: [CommonModule, FormsModule, InvoiceDetailsModalComponent, DeleteConfirmModalComponent, GenericTableComponent, CreateInvoiceModalComponent],
   templateUrl: './facturas-list.component.html',
   styleUrl: './facturas-list.component.css'
 })
 export class FacturasListComponent {
 
   invoices: Invoice[] = [];
+
+  // Variables para modales
   selectedInvoice!: Invoice | null;
   showDetails = false;
   showDelete = false;
+  isCreateModalOpen = false;
 
-  page = 1;
-  pageSize = 10;
-  totalPages = 0;
-  totalItems = 0;
+  public totalItems: number = 0;
+  public totalPages: number = 0;
+  public page: number = 1;
+  public pageSize: number = 10;
 
   searchTerm = '';
+  public invoiceColumns: ColumnDefinition[] = [];
+  public invoiceActions: ActionDefinition[] = [];
 
   startDate: string | null = null;
   endDate: string | null = null;
-
   minAmount: number | null = null;
   maxAmount: number | null = null;
 
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
+    this.defineTableStructure();
     this.loadInvoices();
   }
 
@@ -54,6 +62,7 @@ export class FacturasListComponent {
         this.invoices = res.items;
         this.totalItems = res.totalItems;
         this.totalPages = res.totalPages;
+        this.page = body.page; // Asegurar la página actual
       },
       error: err => console.error(err)
     });
@@ -113,9 +122,58 @@ export class FacturasListComponent {
     this.selectedInvoice = null;
   }
 
+  openCreateInvoice() {
+    this.isCreateModalOpen = true;
+  }
 
   deleteInvoice(id: number) {
     this.invoiceService.delete(id).subscribe(() => this.loadInvoices());
   }
 
+  defineTableStructure() {
+    // 1. Definición de Columnas
+    this.invoiceColumns = [
+      { key: 'invoiceNumber', label: '#', textAlign: 'left' },
+      { key: 'invoiceDate', label: 'Fecha', type: 'date', format: 'dd/MM/yyyy', textAlign: 'left' },
+      { key: 'customerName', label: 'Cliente', textAlign: 'left' },
+      { key: 'sellerName', label: 'Vendedor', textAlign: 'left' },
+      // Observa cómo usamos 'status' para el campo del badge
+      { key: 'status', label: 'Estado', type: 'status', textAlign: 'center' },
+      // Observa el uso de 'number' para formateo de moneda
+      { key: 'total', label: 'Total', type: 'number', format: '1.2-2', textAlign: 'right' }
+    ];
+
+    this.invoiceActions = [
+      {
+        label: 'Detalles',
+        icon: 'bi-pencil',
+        class: 'btn-secondary',
+        action: (invoice: any) => this.openDetails(invoice) // Referencia a la función local
+      },
+      {
+        label: 'PDF',
+        icon: 'bi-file-earmark-pdf',
+        class: 'btn-info text-white',
+        action: (invoice: any) => this.downloadPdf(invoice.id)
+      },
+      {
+        label: 'Eliminar',
+        icon: 'bi-trash',
+        class: 'btn-danger',
+        action: (invoice: any) => this.openDelete(invoice)
+      }
+    ];
+  }
+
+  // Método para manejar el cambio de página desde el componente genérico
+  handlePageChange(newPage: number) {
+    this.page = newPage;
+    this.loadInvoices();
+  }
+
+  // Método para manejar las acciones desde el componente genérico
+  handleActionClick(event: { action: (item: any) => void, item: any }) {
+    // La acción es una referencia a las funciones definidas en `invoiceActions`
+    event.action(event.item);
+  }
 }

@@ -1,0 +1,140 @@
+<div class="modal fade show custom-modal" tabindex="-1" aria-modal="true"
+     style="display: block;"
+     (click)="$event.target === $event.currentTarget && close.emit()">
+
+  <div class="modal-dialog modal-dialog-slide modal-xl">
+    <div class="modal-content border-0 shadow-lg">
+
+      <!-- HEADER -->
+      <div class="modal-header border-0" style="background:#d4145a; color:white;">
+        <h4 class="modal-title">
+          <i class="bi bi-plus-circle"></i> Nueva Factura
+        </h4>
+        <button type="button" class="btn-close btn-close-white" (click)="close.emit()"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+
+        <!-- BUSCAR CLIENTE -->
+        <section class="mb-4">
+          <h5 class="section-title"><i class="bi bi-person-vcard"></i> Datos del Cliente</h5>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Identificación</label>
+              <div class="input-group">
+                <input type="text" class="form-control"
+                       [(ngModel)]="customerIdNumber"
+                       placeholder="Cédula o RUC">
+                <button class="btn btn-primary" (click)="searchCustomer()">
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Datos del cliente cargados -->
+          <div *ngIf="customer" class="alert alert-light border mt-3">
+            <div class="row g-3">
+              <div class="col-md-4"><strong>Nombre:</strong> {{ customer.fullName }}</div>
+              <div class="col-md-4"><strong>Email:</strong> {{ customer.email }}</div>
+              <div class="col-md-4"><strong>Teléfono:</strong> {{ customer.phone }}</div>
+              <div class="col-md-12"><strong>Dirección:</strong> {{ customer.address }}</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DATOS FACTURA -->
+        <section class="mb-4">
+          <h5 class="section-title"><i class="bi bi-receipt-cutoff"></i> Información de Factura</h5>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Fecha</label>
+              <input type="date" class="form-control" [(ngModel)]="invoiceDate">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Método de Pago</label>
+              <select class="form-select" [(ngModel)]="paymentMethodId">
+                <option value="">Seleccione...</option>
+                <option *ngFor="let pm of paymentMethods" [value]="pm.id">{{ pm.name }}</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- DETALLES -->
+        <section class="mb-4">
+          <h5 class="section-title"><i class="bi bi-cart-plus"></i> Detalles</h5>
+
+          <table class="table table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Producto</th>
+                <th width="120px">Cantidad</th>
+                <th width="150px">P. Unit</th>
+                <th width="150px">Total</th>
+                <th width="50px"></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let d of details; let i = index">
+                <td>
+                  <input type="text" class="form-control"
+                         [(ngModel)]="d.product">
+                </td>
+
+                <td>
+                  <input type="number" min="1" class="form-control text-end"
+                         [(ngModel)]="d.quantity"
+                         (ngModelChange)="recalculate()">
+                </td>
+
+                <td>
+                  <input type="number" min="0" step="0.01" class="form-control text-end"
+                         [(ngModel)]="d.unitPrice"
+                         (ngModelChange)="recalculate()">
+                </td>
+
+                <td class="text-end">
+                  {{ d.quantity * d.unitPrice | number:'1.2-2' }}
+                </td>
+
+                <td class="text-center">
+                  <button *ngIf="i > 0" class="btn btn-danger btn-sm"
+                          (click)="removeDetail(i)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button class="btn btn-success" (click)="addDetail()">
+            <i class="bi bi-plus-circle"></i> Agregar Producto
+          </button>
+        </section>
+
+        <!-- RESUMEN -->
+        <section class="text-end border-top pt-3">
+          <p><strong>Subtotal:</strong> {{ subtotal | number:'1.2-2' }}</p>
+          <p><strong>IVA 15%:</strong> {{ iva | number:'1.2-2' }}</p>
+          <p class="fs-4"><strong>Total:</strong> {{ total | number:'1.2-2' }}</p>
+        </section>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer border-0">
+        <button class="btn btn-secondary" (click)="close.emit()">Cancelar</button>
+        <button class="btn btn-primary" (click)="saveInvoice()">
+          <i class="bi bi-check-circle"></i> Guardar Factura
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

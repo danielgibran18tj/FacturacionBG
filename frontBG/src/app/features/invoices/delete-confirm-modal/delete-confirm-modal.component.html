@@ -1,22 +1,38 @@
-<div class="modal-backdrop-custom" (click)="close.emit()"></div>
+<div class="modal fade show" tabindex="-1" aria-modal="true" style="display: block;"
+     (click)="$event.target === $event.currentTarget && close.emit()">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow">
 
-<div class="modal-dialog-custom">
-  <div class="modal-content">
+      <!-- HEADER -->
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-exclamation-triangle-fill me-1"></i>
+          Eliminar Factura
+        </h5>
+        <button type="button" class="btn-close btn-close-white" aria-label="Cerrar" (click)="close.emit()"></button>
+      </div>
 
-    <div class="modal-header bg-danger text-white">
-      <h5 class="modal-title">Eliminar Factura</h5>
-      <button type="button" class="btn-close" (click)="close.emit()"></button>
+      <!-- BODY -->
+      <div class="modal-body text-center">
+        <p class="mb-1">¿Está seguro que desea eliminar la factura?</p>
+        <p class="fw-bold fs-5 text-danger">
+          {{ invoice?.invoiceNumber }}
+        </p>
+        <small class="text-muted">Esta acción no se puede deshacer.</small>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="onConfirm()">
+          <i class="bi bi-trash me-1"></i> Eliminar
+        </button>
+        <button class="btn btn-secondary" (click)="close.emit()">
+          Cancelar
+        </button>
+      </div>
+
     </div>
-
-    <div class="modal-body">
-      <p>¿Está seguro que desea eliminar la factura:</p>
-      <p class="fw-bold">{{ invoice?.invoiceNumber }}</p>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="close.emit()">Cancelar</button>
-      <button class="btn btn-danger" (click)="onConfirm()">Eliminar</button>
-    </div>
-
   </div>
 </div>
+
+<div class="modal-backdrop fade show"></div>

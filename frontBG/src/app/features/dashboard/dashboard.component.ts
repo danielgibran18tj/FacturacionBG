@@ -14,16 +14,13 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 export class DashboardComponent {
   currentUser: User | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
   }
 
-
   logout(): void {
-    if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
-      this.authService.logout();
-    }
+    this.authService.logout();
   }
 }
