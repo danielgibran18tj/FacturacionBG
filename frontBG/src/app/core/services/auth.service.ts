@@ -81,6 +81,10 @@ export class AuthService {
       })
     );
   }
+  
+  getDataUserSession() {
+    return this.http.get(this.API_URL + '/Auth/me');
+  }
 
   isAuthenticated(): boolean {
     return !!this.tokenService.getAccessToken() && 

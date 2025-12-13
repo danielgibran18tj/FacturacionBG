@@ -12,8 +12,8 @@ export class CustomerService {
   constructor(private http: HttpClient) { }
 
 
-  getPagedInvoices(customerIdNumber: string): Observable<any> {
-    return this.http.get<any>(this.API_URL + `/customer/paged?SearchTerm=${customerIdNumber}`);
+  getPagedCustomer(page: number, pageSize: number, searchTerm: string): Observable<any> {
+    return this.http.get<any>(this.API_URL + `/customer/paged?Page=${page}&PageSize=${pageSize}&SearchTerm=${searchTerm}`);
   }
 
   getCustomerByDocument(documentNumber: string): Observable<any> {

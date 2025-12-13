@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces;
+using Application.DTOs;
 using Application.DTOs.Invoice;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{AppRoles.Administrator},{AppRoles.Seller}")]
         public async Task<IActionResult> Create([FromBody] CreateInvoiceDto dto)
         {
             var result = await _invoiceService.CreateInvoiceAsync(dto);
@@ -58,16 +60,23 @@ namespace API.Controllers
         [HttpPost("paged")]
         public async Task<IActionResult> GetPaged([FromBody] InvoicePagedSearchDto request)
         {
+            int? idClient = null;
             var roles = User.Claims
                 .Where(c => c.Type == ClaimTypes.Role)
                 .Select(c => c.Value)
                 .ToList();
 
-            var result = await _invoiceService.GetPagedAsync(request);
+            if (roles.Contains(AppRoles.Customer))
+            {
+                  idClient = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            }
+
+            var result = await _invoiceService.GetPagedAsync(request, idClient);
             return Ok(result);
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = $"{AppRoles.Administrator},{AppRoles.Seller}")]
         public async Task<IActionResult> LogicalDelete(int id)
         {
             var success = await _invoiceService.LogicalDeleteAsync(id);

@@ -30,6 +30,11 @@ export class TokenService {
     return userData ? JSON.parse(userData) : null;
   }
 
+  getUserRoles(): string[] {
+    const user = this.getUser();
+    return user?.roles ?? [];
+  }
+
   clearTokens(): void {
     localStorage.removeItem(this.ACCESS_TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);

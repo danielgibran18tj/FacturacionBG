@@ -138,21 +138,30 @@ namespace API.Controllers
         // Verificar estado y datos del token
         [HttpGet("me")]
         [Authorize]
-        public ActionResult<ApiResponse<object>> GetCurrentUser()
+        public ActionResult<ApiResponse<CurrentUserDto>> GetCurrentUser()
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var username = User.Identity?.Name;
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var firstName = User.FindFirst("firstName")?.Value;
+            var lastName = User.FindFirst("lastName")?.Value;
+            var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
-            return Ok(new ApiResponse<object>
+            var dto = new CurrentUserDto
+            {
+                UserId = userId,
+                Username = username,
+                Email = email,
+                FirstName = firstName,
+                LastName = lastName,
+                Roles = roles
+            };
+
+            return Ok(new ApiResponse<CurrentUserDto>
             {
                 Success = true,
                 Message = "Token válido",
-                Data = new
-                {
-                    userId,
-                    username,
-                    claims = User.Claims.Select(c => new { c.Type, c.Value })
-                }
+                Data = dto
             });
         }
     }

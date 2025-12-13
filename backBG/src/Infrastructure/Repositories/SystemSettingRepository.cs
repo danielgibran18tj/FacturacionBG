@@ -25,7 +25,7 @@ namespace Infrastructure.Repositories
         public async Task<List<SystemSetting>> GetAllAsync()
         {
             return await _context.SystemSettings
-                .OrderBy(x => x.SettingKey)
+                .OrderBy(x => x.Id)
                 .ToListAsync();
         }
 

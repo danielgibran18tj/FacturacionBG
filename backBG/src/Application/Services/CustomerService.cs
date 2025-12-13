@@ -2,12 +2,9 @@
 using Application.Common.Mappings;
 using Application.DTOs;
 using Application.DTOs.Customer;
-using Application.DTOs.Invoice;
 using AutoMapper;
 using Domain.DTOs;
-using Domain.Entities;
 using Domain.Interfaces;
-using iText.Commons.Actions.Contexts;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Services

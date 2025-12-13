@@ -1,7 +1,7 @@
 export interface ColumnDefinition {
   key: string; 
   label: string;
-  type?: 'text' | 'date' | 'number' | 'status';
+  type?: 'text' | 'date' | 'number' | 'status' | 'boolean';
   format?: string;
   textAlign?: 'left' | 'center' | 'right';
 }

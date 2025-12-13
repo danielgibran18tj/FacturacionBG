@@ -7,7 +7,7 @@ namespace Application.Common.Interfaces
     public interface IInvoiceService
     {
         Task<InvoiceDto> CreateInvoiceAsync(CreateInvoiceDto dto);
-        Task<PagedResult<InvoiceDto>> GetPagedAsync(InvoicePagedSearchDto request);
+        Task<PagedResult<InvoiceDto>> GetPagedAsync(InvoicePagedSearchDto request, int? idCustomer = null);
         Task<InvoiceDto?> GetByIdAsync(int id);
         Task<List<InvoiceDto>> GetAllAsync();
         Task<List<InvoiceDto>> GetByCustomerAsync(int customerId);

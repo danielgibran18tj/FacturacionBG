@@ -175,7 +175,7 @@ namespace Application.Services
             return list.Select(i => i.ToDto()).ToList();
         }
 
-        public async Task<PagedResult<InvoiceDto>> GetPagedAsync(InvoicePagedSearchDto request)
+        public async Task<PagedResult<InvoiceDto>> GetPagedAsync(InvoicePagedSearchDto request, int? idCustomer = null)
         {
             var pagedData = await _invoiceRepo.GetPagedAsync(
                 request.Page,
@@ -184,7 +184,8 @@ namespace Application.Services
                 request.StartDate,
                 request.EndDate,
                 request.MinAmount,
-                request.MaxAmount
+                request.MaxAmount,
+                idCustomer
             );
 
             return new PagedResult<InvoiceDto>

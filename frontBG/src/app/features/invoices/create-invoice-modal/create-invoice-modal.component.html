@@ -1,6 +1,5 @@
-<div class="modal fade show custom-modal" tabindex="-1" aria-modal="true"
-     style="display: block;"
-     (click)="$event.target === $event.currentTarget && close.emit()">
+<div class="modal fade show custom-modal" tabindex="-1" aria-modal="true" style="display: block;"
+  (click)="$event.target === $event.currentTarget && close.emit()">
 
   <div class="modal-dialog modal-dialog-slide modal-xl">
     <div class="modal-content border-0 shadow-lg">
@@ -24,9 +23,7 @@
             <div class="col-md-4">
               <label class="form-label">Identificación</label>
               <div class="input-group">
-                <input type="text" class="form-control"
-                       [(ngModel)]="customerIdNumber"
-                       placeholder="Cédula o RUC">
+                <input type="text" class="form-control" [(ngModel)]="customerIdNumber" placeholder="Cédula o RUC">
                 <button class="btn btn-primary" (click)="searchCustomer()">
                   <i class="bi bi-search"></i>
                 </button>
@@ -72,7 +69,7 @@
           <table class="table table-bordered align-middle">
             <thead class="table-light">
               <tr>
-                <th>Producto</th>
+                <th style="width: 35%">Producto</th>
                 <th width="120px">Cantidad</th>
                 <th width="150px">P. Unit</th>
                 <th width="150px">Total</th>
@@ -82,33 +79,63 @@
 
             <tbody>
               <tr *ngFor="let d of details; let i = index">
-                <td>
-                  <input type="text" class="form-control"
-                         [(ngModel)]="d.product">
+
+                <!-- INPUT PRODUCTO CON AUTOCOMPLETE -->
+                <td class="position-relative">
+                  <input type="text"
+                        class="form-control"
+                        [(ngModel)]="d.productName"
+                        (input)="searchProducts(d.productName, i)"
+                        autocomplete="off">
+
+                  <!-- LISTA DE RESULTADOS -->
+                  <ul *ngIf="productResults[i]?.length"
+                      class="list-group position-absolute w-100"
+                      style="z-index: 1000; max-height: 200px; overflow-y: auto;">
+                    <li *ngFor="let p of productResults[i]"
+                        (click)="selectProduct(p, i)"
+                        class="list-group-item list-group-item-action"
+                        style="cursor: pointer;">
+                      <strong>{{ p.name }}</strong><br>
+                      <small class="text-muted">{{ p.code }} — ${{ p.unitPrice }}</small>
+                    </li>
+                  </ul>
                 </td>
 
+                <!-- CANTIDAD -->
                 <td>
-                  <input type="number" min="1" class="form-control text-end"
-                         [(ngModel)]="d.quantity"
-                         (ngModelChange)="recalculate()">
+                  <input type="number"
+                        min="1"
+                        class="form-control text-end"
+                        [(ngModel)]="d.quantity"
+                        (ngModelChange)="recalculate()">
                 </td>
 
+                <!-- PRECIO UNITARIO -->
                 <td>
-                  <input type="number" min="0" step="0.01" class="form-control text-end"
-                         [(ngModel)]="d.unitPrice"
-                         (ngModelChange)="recalculate()">
+                  <input type="number"
+                        min="0"
+                        step="0.01"
+                        class="form-control text-end"
+                        [(ngModel)]="d.unitPrice"
+                        disabled
+                        (ngModelChange)="recalculate()">
                 </td>
 
+                <!-- TOTAL -->
                 <td class="text-end">
                   {{ d.quantity * d.unitPrice | number:'1.2-2' }}
                 </td>
 
+                <!-- ELIMINAR -->
                 <td class="text-center">
-                  <button *ngIf="i > 0" class="btn btn-danger btn-sm"
+                  <button *ngIf="i > 0"
+                          class="btn btn-danger btn-sm"
                           (click)="removeDetail(i)">
                     <i class="bi bi-trash"></i>
                   </button>
                 </td>
+
               </tr>
             </tbody>
           </table>
@@ -121,7 +148,7 @@
         <!-- RESUMEN -->
         <section class="text-end border-top pt-3">
           <p><strong>Subtotal:</strong> {{ subtotal | number:'1.2-2' }}</p>
-          <p><strong>IVA 15%:</strong> {{ iva | number:'1.2-2' }}</p>
+          <p><strong>IVA {{ivaGeneral}} %:</strong> {{ iva | number:'1.2-2' }}</p>
           <p class="fs-4"><strong>Total:</strong> {{ total | number:'1.2-2' }}</p>
         </section>
 

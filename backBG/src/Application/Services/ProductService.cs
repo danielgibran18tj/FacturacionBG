@@ -1,6 +1,10 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Mappings;
+using Application.DTOs;
+using Application.DTOs.Customer;
 using Application.DTOs.Product;
+using AutoMapper;
+using Domain.DTOs;
 using Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -10,12 +14,15 @@ namespace Application.Services
     {
         private readonly IProductRepository _repository;
         private readonly ILogger<ProductService> _logger;
+        private readonly IMapper _mapper;
 
         public ProductService(
             IProductRepository repository,
+            IMapper mapper,
             ILogger<ProductService> logger)
         {
             _repository = repository;
+            _mapper = mapper;
             _logger = logger;
         }
 
@@ -69,6 +76,24 @@ namespace Application.Services
         {
             var lowStock = await _repository.GetLowStockProductsAsync();
             return lowStock.Select(p => p.ToDto()).ToList();
+        }
+
+        public async Task<PagedResult<ProductDto>> GetPagedAsync(PageRequestDto request)
+        {
+            var pagedData = await _repository.GetPagedAsync(
+                           request.Page,
+                           request.PageSize,
+                           request.SearchTerm
+                       );
+
+            return new PagedResult<ProductDto>
+            {
+                Items = _mapper.Map<List<ProductDto>>(pagedData.Items),
+                TotalItems = pagedData.TotalItems,
+                TotalPages = pagedData.TotalPages,
+                Page = request.Page,
+                PageSize = request.PageSize
+            };
         }
     }
 }

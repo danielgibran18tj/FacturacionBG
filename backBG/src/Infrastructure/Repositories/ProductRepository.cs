@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -95,5 +96,42 @@ namespace Infrastructure.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<PagedResult<Product>> GetPagedAsync(int page, int pageSize, string? search = null)
+        {
+            var query = _context.Products
+                .AsQueryable();
+
+            // ---- FILTROS ----
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p =>
+                    p.IsActive &&
+                    p.Code.Contains(search) ||
+                    p.Name.Contains(search) //||
+                    //(p.Description != null && p.Description.Contains(search))
+                );
+            }
+
+            // ---- TOTAL ----
+            var totalItems = await query.CountAsync();
+
+            // ---- PAGINACIÓN ----
+            var items = await query
+                .OrderByDescending(i => i.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Product>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
     }
 }

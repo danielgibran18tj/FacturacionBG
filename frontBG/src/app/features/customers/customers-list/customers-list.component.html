@@ -1,0 +1,49 @@
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+    <h5 class="m-0 fw-bold">
+      <i class="bi bi-people"></i> Clientes
+    </h5>
+
+    <button class="btn btn-primary btn-sm"
+            style="background:#d4145a; border-color:#d4145a;">
+      <i class="bi bi-person-plus"></i> Nuevo Cliente
+    </button>
+  </div>
+
+  <div class="card-body">
+
+    <!-- BÚSQUEDA -->
+    <div class="input-group mb-3">
+      <span class="input-group-text bg-light">
+        <i class="bi bi-search"></i>
+      </span>
+      <input [(ngModel)]="searchTerm"
+             class="form-control"
+             placeholder="Buscar cliente..."
+             (keyup.enter)="loadCustomers()">
+      <button class="btn btn-outline-primary"
+              (click)="loadCustomers()">Buscar</button>
+    </div>
+
+    <!-- TABLA -->
+    <app-generic-table
+      [data]="customers"
+      [columns]="customerColumns"
+      [actions]="customerActions"
+      [totalPages]="totalPages"
+      [currentPage]="page"
+      (pageChange)="handlePageChange($event)"
+      (actionClick)="handleActionClick($event)">
+    </app-generic-table>
+
+  </div>
+</div>
+
+<!-- MODAL ELIMINAR -->
+<!-- <app-delete-confirm-modal
+  *ngIf="selectedCustomer && showDelete"
+  [title]="'Eliminar cliente'"
+  [message]="'¿Desea eliminar el cliente ' + selectedCustomer.fullName + '?'"
+  (confirm)="deleteCustomer(selectedCustomer.id)"
+  (close)="closeDelete()">
+</app-delete-confirm-modal> -->

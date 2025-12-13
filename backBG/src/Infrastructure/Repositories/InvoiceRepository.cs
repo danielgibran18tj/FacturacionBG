@@ -127,7 +127,7 @@ namespace Infrastructure.Repositories
         }
 
         public async Task<PagedResult<Invoice>> GetPagedAsync(int page, int pageSize, string? search = null, 
-            DateTime? start = null, DateTime? end = null, decimal? min = null, decimal? max = null)
+            DateTime? start = null, DateTime? end = null, decimal? min = null, decimal? max = null, int? idCustomer = null)
         {
             var query = _context.Invoices
                 .Include(i => i.Customer)
@@ -151,6 +151,8 @@ namespace Infrastructure.Repositories
             if (end.HasValue) query = query.Where(i => i.InvoiceDate <= end);
             if (min.HasValue) query = query.Where(i => i.Total >= min);
             if (max.HasValue) query = query.Where(i => i.Total <= max);
+
+            query = query.Where(i => i.CustomerId == idCustomer);
 
             // ---- TOTAL ----
             var totalItems = await query.CountAsync();

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs.SystemSettings;
+using Domain.Entities;
 
 namespace Application.Common.Interfaces
 {
@@ -6,7 +7,7 @@ namespace Application.Common.Interfaces
     {
         Task<decimal> GetIvaAsync();
         Task<string> GetCurrencySymbolAsync();
-        Task<List<SystemSetting>> GetAllAsync();
+        Task<List<SystemSettingDto>> GetAllAsync();
         Task SetValueAsync(string key, string value, int? updatedBy = null);
     }
 }

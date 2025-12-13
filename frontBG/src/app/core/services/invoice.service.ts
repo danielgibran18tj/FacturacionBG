@@ -27,6 +27,6 @@ export class InvoiceService {
   }
 
   saveInvoices(body: any): Observable<any> {
-    return this.http.post<any>(this.API_URL + "/api/Invoice", body);
+    return this.http.post<any>(this.API_URL + "/Invoice", body);
   }
 }

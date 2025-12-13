@@ -1,0 +1,81 @@
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+    <h5 class="m-0 fw-bold">
+      <i class="bi bi-box"></i> Productos
+    </h5>
+
+    <button class="btn btn-primary btn-sm" (click)="openCreateProduct()"
+            style="background:#d4145a; border-color:#d4145a;">
+      <i class="bi bi-plus-circle"></i> Nuevo Producto
+    </button>
+  </div>
+
+  <div class="card-body">
+    <!-- Búsqueda -->
+    <div class="input-group mb-3">
+      <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+      <input [(ngModel)]="searchTerm" class="form-control" placeholder="Buscar producto..."
+             (keyup.enter)="loadProducts()">
+      <button class="btn btn-outline-primary" (click)="loadProducts()">Buscar</button>
+    </div>
+
+    <!-- === FILTROS AVANZADOS === -->
+    <!-- <div class="card p-3 mb-3">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Stock mínimo</label>
+          <input type="number" class="form-control" [(ngModel)]="minStock">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Stock máximo</label>
+          <input type="number" class="form-control" [(ngModel)]="maxStock">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Precio mínimo</label>
+          <input type="number" class="form-control" [(ngModel)]="minPrice">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Precio máximo</label>
+          <input type="number" class="form-control" [(ngModel)]="maxPrice">
+        </div>
+      </div>
+      <div class="mt-3 d-flex gap-2">
+        <button class="btn btn-primary" (click)="applyFilters()">
+          <i class="bi bi-filter"></i> Aplicar filtros
+        </button>
+        <button class="btn btn-outline-secondary" (click)="clearFilters()">
+          <i class="bi bi-x-circle"></i> Limpiar
+        </button>
+      </div>
+    </div> -->
+
+    <div class="card-body">
+      <app-generic-table
+        [data]="products"
+        [columns]="productColumns"
+        [actions]="productActions"
+        [totalPages]="totalPages"
+        [currentPage]="page"
+        (pageChange)="handlePageChange($event)"
+        (actionClick)="handleActionClick($event)">
+      </app-generic-table>
+    </div>
+  </div>
+</div>
+
+<!-- <app-product-details-modal *ngIf="selectedProduct && showDetails" [product]="selectedProduct"
+  (close)="closeDetails()">
+</app-product-details-modal>
+
+<app-delete-confirm-modal *ngIf="selectedProduct && showDelete" [product]="selectedProduct"
+  (confirm)="deleteProduct($event)" (close)="closeDelete()">
+</app-delete-confirm-modal>
+
+<app-create-product-modal
+    *ngIf="isCreateModalOpen"
+    (close)="isCreateModalOpen = false"
+    (saved)="loadProducts()">
+</app-create-product-modal> -->

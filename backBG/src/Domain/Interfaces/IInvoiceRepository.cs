@@ -7,7 +7,7 @@ namespace Domain.Interfaces
     {
         Task<Invoice?> GetByIdAsync(int id);
         Task<PagedResult<Invoice>> GetPagedAsync(int page, int pageSize, string? search = null, DateTime? start = null,
-            DateTime? end = null, decimal? min = null, decimal? max = null);
+            DateTime? end = null, decimal? min = null, decimal? max = null, int? idCustomer = null);
         Task<Invoice?> GetByIdWithDetailsAsync(int id);
         Task<Invoice?> GetByInvoiceNumberAsync(string invoiceNumber);
         Task<List<Invoice>> GetAllAsync();

@@ -1,12 +1,14 @@
 ﻿using Application.Common.Interfaces;
 using Application.DTOs;
 using Application.DTOs.Customer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = $"{AppRoles.Administrator},{AppRoles.Seller}")]
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
