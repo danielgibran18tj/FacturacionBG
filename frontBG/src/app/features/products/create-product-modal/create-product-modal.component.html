@@ -1,0 +1,95 @@
+<div class="modal fade show"
+     tabindex="-1"
+     aria-modal="true"
+     style="display: block;"
+     (click)="$event.target === $event.currentTarget && close.emit()">
+
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content shadow">
+
+      <!-- HEADER -->
+      <div class="modal-header text-white" style="background:#d4145a;">
+        <h5 class="modal-title">
+          <i class="bi bi-box-seam me-1"></i>
+          Nuevo Producto
+        </h5>
+        <button type="button"
+                class="btn-close btn-close-white"
+                aria-label="Cerrar"
+                (click)="close.emit()">
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+
+        <div class="row g-3">
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Código</label>
+            <input class="form-control"
+                   [(ngModel)]="model.code"
+                   placeholder="ELEC-001">
+          </div>
+
+          <div class="col-md-8">
+            <label class="form-label fw-bold">Nombre</label>
+            <input class="form-control"
+                   [(ngModel)]="model.name"
+                   placeholder="Nombre del producto">
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label fw-bold">Descripción</label>
+            <textarea class="form-control"
+                      rows="2"
+                      [(ngModel)]="model.description"
+                      placeholder="Descripción breve del producto">
+            </textarea>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Precio Unitario</label>
+            <input type="number"
+                   min="0"
+                   step="0.01"
+                   class="form-control text-end"
+                   [(ngModel)]="model.unitPrice">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Stock Inicial</label>
+            <input type="number"
+                   min="0"
+                   class="form-control text-end"
+                   [(ngModel)]="model.stock">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Stock Mínimo</label>
+            <input type="number"
+                   min="0"
+                   class="form-control text-end"
+                   [(ngModel)]="model.minStock">
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="close.emit()">
+          Cancelar
+        </button>
+        <button class="btn btn-primary" (click)="onSave()">
+          <i class="bi bi-check-circle me-1"></i>
+          Guardar Producto
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade show"></div>

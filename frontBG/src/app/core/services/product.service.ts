@@ -13,10 +13,15 @@ export class ProductService {
   constructor(private http: HttpClient) { }
 
   getPagedProducts(body: any): Observable<any> {
-    console.log(body);
-    
     return this.http.get<any>(this.API_URL + "/Product/paged", body);
   }
 
+  create(body: any) {
+    return this.http.post(this.API_URL + '/Product', body);
+  }
+
+  update(id: number, body: any) {
+    return this.http.put(this.API_URL + `/Product/${id}`, body);
+  }
 
 }

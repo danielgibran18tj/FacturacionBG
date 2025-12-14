@@ -18,6 +18,10 @@
               <span class="badge bg-success" *ngIf="getCellValue(item, col) === 'Active'">Pagada</span>
               <span class="badge bg-warning text-dark" *ngIf="getCellValue(item, col) !== 'Active'">Pendiente</span>
             </span>
+            <span *ngSwitchCase="'isActive'">
+              <span class="badge bg-success" *ngIf="getCellValue(item, col) === true">Activo</span>
+              <span class="badge bg-warning text-dark" *ngIf="getCellValue(item, col) === false">Inactivo</span>
+            </span>
 
             <ng-container *ngSwitchCase="'date'">
               {{ getCellValue(item, col) | date: (col.format || 'dd/MM/yyyy') }}

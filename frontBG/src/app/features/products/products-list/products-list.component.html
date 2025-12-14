@@ -15,8 +15,8 @@
     <div class="input-group mb-3">
       <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
       <input [(ngModel)]="searchTerm" class="form-control" placeholder="Buscar producto..."
-             (keyup.enter)="loadProducts()">
-      <button class="btn btn-outline-primary" (click)="loadProducts()">Buscar</button>
+             (keyup.enter)="onSearch()">
+      <button class="btn btn-outline-primary" (click)="onSearch()">Buscar</button>
     </div>
 
     <!-- === FILTROS AVANZADOS === -->
@@ -66,16 +66,15 @@
   </div>
 </div>
 
-<!-- <app-product-details-modal *ngIf="selectedProduct && showDetails" [product]="selectedProduct"
-  (close)="closeDetails()">
-</app-product-details-modal>
-
-<app-delete-confirm-modal *ngIf="selectedProduct && showDelete" [product]="selectedProduct"
-  (confirm)="deleteProduct($event)" (close)="closeDelete()">
-</app-delete-confirm-modal>
-
 <app-create-product-modal
-    *ngIf="isCreateModalOpen"
-    (close)="isCreateModalOpen = false"
-    (saved)="loadProducts()">
-</app-create-product-modal> -->
+  *ngIf="showCreateProduct"
+  (save)="createProduct($event)"
+  (close)="showCreateProduct = false">
+</app-create-product-modal>
+
+<app-edit-product-modal
+  *ngIf="showEditProduct"
+  [product]="selectedProduct"
+  (update)="updateProduct($event)"
+  (close)="showEditProduct = false">
+</app-edit-product-modal>

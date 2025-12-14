@@ -51,6 +51,14 @@ namespace Application.Services
             return _mapper.Map<CustomerDto>(customer);
         }
 
+        public async Task<CustomerDto> GetByUserNameAsync(string userName)
+        {
+            var customer = await _customerRepository.GetByUserNameAsync(userName)
+                ?? throw new KeyNotFoundException("Cliente no encontrado");
+
+            return _mapper.Map<CustomerDto>(customer);
+        }
+
         public async Task<CustomerDto> CreateAsync(CreateCustomerDto dto)
         {
             if (await _customerRepository.ExistsByDocumentNumberAsync(dto.DocumentNumber))
@@ -108,6 +116,20 @@ namespace Application.Services
                 Page = request.Page,
                 PageSize = request.PageSize
             };
+        }
+
+        public async Task<bool> LogicalDeleteAsync(int id)
+        {
+            var invoice = await _customerRepository.GetByIdAsync(id);
+
+            if (invoice == null)
+                return false;
+
+            // Soft delete
+            invoice.IsActive = false;
+
+            await _customerRepository.UpdateAsync(invoice);
+            return true;
         }
 
     }

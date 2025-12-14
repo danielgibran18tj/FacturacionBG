@@ -1,0 +1,10 @@
+.card-register {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* fondo oscuro */
+  overflow-y: auto;        /* 🔥 habilita scroll vertical */
+}
+
+.register-overlay {
+  height: 100vh;
+}

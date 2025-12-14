@@ -1,8 +1,8 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Settings;
-using Application.DTOs;
 using Application.DTOs.Auth;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.Extensions.Options;
@@ -13,12 +13,16 @@ namespace Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IJwtService _jwtService;
         private readonly JwtSettings _jwtSettings;
 
         public AuthService(
             IUserRepository userRepository,
+            IUserService userService,
+            IMapper mapper,
             IRefreshTokenRepository refreshTokenRepository,
             IRoleRepository roleRepository,
             IJwtService jwtService,
@@ -26,6 +30,8 @@ namespace Application.Services
         {
             _userRepository = userRepository;
             _refreshTokenRepository = refreshTokenRepository;
+            _mapper = mapper;
+            _userService = userService;
             _roleRepository = roleRepository;
             _jwtService = jwtService;
             _jwtSettings = jwtSettings.Value;
@@ -64,13 +70,16 @@ namespace Application.Services
             await _refreshTokenRepository.AddAsync(refreshTokenEntity);
             await _refreshTokenRepository.SaveChangesAsync();
 
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Roles = roles;
+
             return new LoginResponseDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
-                User = user.ToDto(roles)
-            };
+                User = userDto
+        };
         }
 
         // REFRESH TOKEN
@@ -108,13 +117,16 @@ namespace Application.Services
             await _refreshTokenRepository.AddAsync(newRefreshEntity);
             await _refreshTokenRepository.SaveChangesAsync();
 
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Roles = roles;
+
             return new LoginResponseDto
             {
                 AccessToken = newAccess,
                 RefreshToken = newRefresh,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
-                User = user.ToDto(roles)
-            };
+                User = userDto
+        };
         }
 
         // LOGOUT
@@ -136,42 +148,8 @@ namespace Application.Services
         // REGISTER
         public async Task<UserDto> RegisterAsync(RegisterRequestDto request)
         {
-            if (await _userRepository.ExistsByUsernameAsync(request.Username))
-                throw new InvalidOperationException("El nombre de usuario ya está en uso");
-
-            if (await _userRepository.ExistsByEmailAsync(request.Email))
-                throw new InvalidOperationException("El email ya está registrado");
-
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-            var user = new User
-            {
-                Username = request.Username,
-                Email = request.Email,
-                PasswordHash = passwordHash,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await _userRepository.AddAsync(user);
-            await _userRepository.SaveChangesAsync();
-
-            // Asignar roles (ADMIN, VENDEDOR, CLIENTE)
-            var rolesToAssign = request.Roles.ToList();
-
-            foreach (var roleName in rolesToAssign)
-            {
-                var role = await _roleRepository.GetByNameAsync(roleName);
-                if (role != null)
-                    await _roleRepository.AddUserRoleAsync(user.Id, role.Id);
-            }
-            await _roleRepository.SaveChangesAsync();
-
-            var finalRoles = rolesToAssign;
-
-            return user.ToDto(finalRoles);
+            return await _userService.CreateAsync(request);
         }
+
     }
 }

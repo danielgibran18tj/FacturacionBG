@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Customer;
+﻿using Application.DTOs.Auth;
+using Application.DTOs.Customer;
 using Application.DTOs.PaymentMethod;
 using Application.DTOs.Product;
 using Application.DTOs.SystemSettings;
@@ -33,6 +34,12 @@ namespace Application.Common.Settings
                     opt => opt.MapFrom(src => src.Value))
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
+            CreateMap<User, UserDto>()
+               .ForMember(dest => dest.Roles,
+                   opt => opt.MapFrom(src =>
+                       src.UserRoles != null
+                           ? src.UserRoles.Select(ur => ur.Role.Name)
+                           : new List<string>()));
         }
     }
 }

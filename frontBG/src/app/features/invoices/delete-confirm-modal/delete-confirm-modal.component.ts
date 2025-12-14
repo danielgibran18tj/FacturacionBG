@@ -15,6 +15,7 @@ export class DeleteConfirmModalComponent {
   onConfirm() {
     if (this.invoice) {
       this.confirm.emit(this.invoice.id);
+      this.close.emit();
     }
   }
 }

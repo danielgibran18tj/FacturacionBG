@@ -52,21 +52,6 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Product>> SearchAsync(string searchTerm)
-        {
-            searchTerm = searchTerm.ToLower();
-
-            return await _context.Products
-                .Where(p =>
-                    p.Name.ToLower().Contains(searchTerm) ||
-                    p.Code.ToLower().Contains(searchTerm) ||
-                    (p.Description != null && p.Description.ToLower().Contains(searchTerm))
-                )
-                .OrderBy(p => p.Name)
-                .Take(100)
-                .ToListAsync();
-        }
-
         public async Task<Product> AddAsync(Product product)
         {
             await _context.Products.AddAsync(product);
@@ -100,13 +85,13 @@ namespace Infrastructure.Repositories
         public async Task<PagedResult<Product>> GetPagedAsync(int page, int pageSize, string? search = null)
         {
             var query = _context.Products
+                //.Where(p => p.IsActive)
                 .AsQueryable();
 
             // ---- FILTROS ----
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query = query.Where(p =>
-                    p.IsActive &&
                     p.Code.Contains(search) ||
                     p.Name.Contains(search) //||
                     //(p.Description != null && p.Description.Contains(search))

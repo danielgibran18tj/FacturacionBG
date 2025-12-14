@@ -2,7 +2,7 @@
   (click)="$event.target === $event.currentTarget && close.emit()">
 
   <div class="modal-dialog modal-dialog-slide modal-xl">
-    <div class="modal-content border-0 shadow-lg">
+    <div class="modal-content border-0 shadow-lg" (click)="$event.stopPropagation()">
 
       <!-- HEADER -->
       <div class="modal-header border-0" style="background:#d4145a; color:white;">
@@ -23,7 +23,11 @@
             <div class="col-md-4">
               <label class="form-label">Identificación</label>
               <div class="input-group">
-                <input type="text" class="form-control" [(ngModel)]="customerIdNumber" placeholder="Cédula o RUC">
+                <input type="text" 
+                        class="form-control" 
+                        [(ngModel)]="customerIdNumber" 
+                        (keyup.enter)="searchCustomer()"
+                        placeholder="Cédula o RUC">
                 <button class="btn btn-primary" (click)="searchCustomer()">
                   <i class="bi bi-search"></i>
                 </button>
@@ -49,7 +53,7 @@
           <div class="row g-3">
             <div class="col-md-4">
               <label class="form-label">Fecha</label>
-              <input type="date" class="form-control" [(ngModel)]="invoiceDate">
+              <input type="date" class="form-control" name="invoiceDate" [(ngModel)]="invoiceDate">
             </div>
 
             <div class="col-md-4">

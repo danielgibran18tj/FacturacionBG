@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace Infrastructure.Repositories
         {
             _logger.LogDebug("Getting user by username: {Username}", username);
             return await _context.Users
+                .Include(uc => uc.Customer)
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
                 .FirstOrDefaultAsync(u => u.Username == username);
@@ -91,6 +93,49 @@ namespace Infrastructure.Repositories
                 .Where(u => u.IsActive && u.UserRoles.Any(ur => ur.Role.Name == "Seller"))
                 .OrderBy(u => u.Username)
                 .ToListAsync();
+        }
+
+        public async Task<PagedResult<User>> GetPagedAsync(int page, int pageSize, bool IsActive, string? search = null)
+        {
+            var query = _context.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .AsQueryable();
+
+            // ---- FILTROS ----
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(u =>
+                    u.Username.Contains(search) ||
+                    u.Email.Contains(search) || 
+                    (u.FirstName != null && u.FirstName.Contains(search)) ||
+                    (u.LastName != null && u.LastName.Contains(search))
+                );
+            }
+
+            if (IsActive == true)
+            {
+                query = query.Where(p => p.IsActive);
+            }
+
+            // ---- TOTAL ----
+            var totalItems = await query.CountAsync();
+
+            // ---- PAGINACIÓN ----
+            var items = await query
+                .OrderByDescending(i => i.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<User>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
+                Page = page,
+                PageSize = pageSize
+            };
         }
 
         public async Task SaveChangesAsync()

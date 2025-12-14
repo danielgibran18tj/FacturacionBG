@@ -34,6 +34,14 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(c => c.DocumentNumber == documentNumber);
         }
 
+        public async Task<Customer?> GetByUserNameAsync(string userName)
+        {
+            _logger.LogDebug("Getting customer by userName: {userName}", userName);
+            return await _context.Customers
+                .Include(c => c.User)
+                .FirstOrDefaultAsync(c => c.FullName == userName);
+        }
+
         public async Task<Customer?> GetByUserIdAsync(int userId)
         {
             _logger.LogDebug("Getting customer by user ID: {UserId}", userId);
@@ -103,12 +111,11 @@ namespace Infrastructure.Repositories
             return customer;
         }
 
-        public Task UpdateAsync(Customer customer)
+        public async Task UpdateAsync(Customer customer)
         {
             _logger.LogInformation("Updating customer: {CustomerId}", customer.Id);
-            customer.UpdatedAt = DateTime.UtcNow;
             _context.Customers.Update(customer);
-            return Task.CompletedTask;
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsByDocumentNumberAsync(string documentNumber)

@@ -1,5 +1,6 @@
 using Application.Common.Interfaces;
 using Application.DTOs;
+using Application.DTOs.Customer;
 using Application.DTOs.Product;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,13 @@ namespace API.Controllers
         {
             var result = await _productService.CreateAsync(dto);
             return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, UpdateProductDto dto)
+        {
+            var product = await _productService.UpdateAsync(id, dto);
+            return Ok(product);
         }
 
         [HttpPatch("{id}/stock")]

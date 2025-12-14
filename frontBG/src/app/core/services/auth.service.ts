@@ -58,7 +58,11 @@ export class AuthService {
     if (refreshToken) {
       this.http.post(`${this.API_URL}/auth/logout`, { refreshToken })
         .subscribe({
-          complete: () => this.clearSession()
+          complete: () => {
+            this.clearSession();
+            console.log("Cerrad");
+            
+          } 
         });
     } else {
       this.clearSession();

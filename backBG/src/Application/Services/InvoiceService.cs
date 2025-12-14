@@ -23,7 +23,9 @@ namespace Application.Services
     {
         private readonly IInvoiceRepository _invoiceRepo;
         private readonly ICustomerRepository _customerRepo;
+        private readonly ICustomerService _customerService;
         private readonly IUserRepository _userRepo;
+        private readonly IUserService _userService;
         private readonly IProductRepository _productRepo;
         private readonly IPaymentMethodRepository _paymentRepo;
         private readonly ISystemSettingService _settings;
@@ -34,7 +36,9 @@ namespace Application.Services
         public InvoiceService(
             IInvoiceRepository invoiceRepo,
             ICustomerRepository customerRepo,
+            ICustomerService customerService,
             IUserRepository userRepo,
+            IUserService userService,
             IProductRepository productRepo,
             IPaymentMethodRepository paymentRepo,
             ISystemSettingService settings,
@@ -45,7 +49,9 @@ namespace Application.Services
         {
             _invoiceRepo = invoiceRepo;
             _customerRepo = customerRepo;
+            _customerService = customerService;
             _userRepo = userRepo;
+            _userService = userService;
             _productRepo = productRepo;
             _paymentRepo = paymentRepo;
             _settings = settings;
@@ -175,8 +181,17 @@ namespace Application.Services
             return list.Select(i => i.ToDto()).ToList();
         }
 
-        public async Task<PagedResult<InvoiceDto>> GetPagedAsync(InvoicePagedSearchDto request, int? idCustomer = null)
+        public async Task<PagedResult<InvoiceDto>> GetPagedAsync(InvoicePagedSearchDto request, int? idUser_Customer = null)
         {
+
+            int? idCustomer = null;
+            if (idUser_Customer != null)
+            {
+                var user = await _userService.GetByIdAsync(idUser_Customer.Value);
+                var customer = await _customerService.GetByUserNameAsync(user.Username);
+                idCustomer = customer.Id; 
+            }
+
             var pagedData = await _invoiceRepo.GetPagedAsync(
                 request.Page,
                 request.PageSize,
@@ -207,7 +222,6 @@ namespace Application.Services
 
             // Soft delete
             invoice.Status = "Inactive";
-            invoice.UpdatedAt = DateTime.UtcNow;
 
             await _invoiceRepo.UpdateAsync(invoice);
             return true;

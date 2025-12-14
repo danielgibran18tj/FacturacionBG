@@ -39,6 +39,12 @@ export const routes: Routes = [
         canActivate: [RoleGuard]
       },
       {
+        path: 'users',
+        loadComponent: () => import('./features/users/users-list/users-list.component').then(m => m.UsersListComponent),
+        data: { roles: ['Administrator', 'Seller'] },
+        canActivate: [RoleGuard]
+      },
+      {
         path: 'system-settings',
         loadComponent: () => import('./features/system-settings/system-settings/system-settings.component').then(m => m.SystemSettingsComponent),
         data: { roles: ['Administrator'] },

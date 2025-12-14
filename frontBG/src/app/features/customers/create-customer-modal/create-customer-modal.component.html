@@ -1,0 +1,78 @@
+<div class="modal fade show custom-modal" tabindex="-1" aria-modal="true" style="display: block;"
+    (click)="$event.target === $event.currentTarget && close.emit()">
+
+    <div class="modal-dialog modal-dialog-slide modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+
+            <!-- HEADER -->
+            <div class="modal-header border-0" style="background:#d4145a; color:white;">
+                <h4 class="modal-title">
+                    <i class="bi bi-person-plus"></i> Nuevo Cliente
+                </h4>
+                <button type="button" class="btn-close btn-close-white" (click)="close.emit()"></button>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Documento</label>
+                        <input class="form-control" [(ngModel)]="model.documentNumber">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Nombre completo</label>
+                        <input class="form-control" [(ngModel)]="model.fullName">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Teléfono</label>
+                        <input class="form-control" [(ngModel)]="model.phone">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Email</label>
+                        <input class="form-control" type="email" [(ngModel)]="model.email">
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Dirección</label>
+                        <textarea class="form-control" rows="2" [(ngModel)]="model.address"></textarea>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- RELACIONAR USUARIO -->
+                <!-- <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" id="linkUser" name="linkUser"
+                        [(ngModel)]="linkUser">
+
+                    <label class="form-check-label fw-bold" for="linkUser">
+                        Relacionar con usuario del sistema
+                    </label>
+                </div>
+
+                <div *ngIf="linkUser" class="mt-3">
+                    <label class="form-label fw-bold" for="username">
+                        Nombre de usuario
+                    </label>
+
+                    <input id="username" name="username" class="form-control" placeholder="username_cliente"
+                        [(ngModel)]="model.username">
+                </div> -->
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer border-0">
+                <button class="btn btn-secondary" (click)="close.emit()">Cancelar</button>
+                <button class="btn btn-primary" [disabled]="isSaving" (click)="save()">
+                    <i class="bi bi-check-circle"></i> Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

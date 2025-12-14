@@ -23,10 +23,11 @@ export class InvoiceService {
   }
 
   delete(id: number) {
-    return this.http.delete(`/api/Invoice/${id}`);
+    return this.http.delete(this.API_URL + `/Invoice/${id}`);
   }
 
   saveInvoices(body: any): Observable<any> {
     return this.http.post<any>(this.API_URL + "/Invoice", body);
   }
+
 }

@@ -4,7 +4,7 @@
       <i class="bi bi-people"></i> Clientes
     </h5>
 
-    <button class="btn btn-primary btn-sm"
+    <button class="btn btn-primary btn-sm" (click)="openCreateCustomer()"
             style="background:#d4145a; border-color:#d4145a;">
       <i class="bi bi-person-plus"></i> Nuevo Cliente
     </button>
@@ -39,11 +39,24 @@
   </div>
 </div>
 
+<app-create-customer-modal
+  *ngIf="isCreateModalOpen"
+  (close)="isCreateModalOpen = false"
+  (created)="loadCustomers()">
+</app-create-customer-modal>
+
+<app-edit-customer-modal
+  *ngIf="selectedCustomer && showEdit"
+  [customer]="selectedCustomer"
+  (close)="closeEdit()"
+  (saved)="loadCustomers()">
+</app-edit-customer-modal>
+
 <!-- MODAL ELIMINAR -->
-<!-- <app-delete-confirm-modal
-  *ngIf="selectedCustomer && showDelete"
-  [title]="'Eliminar cliente'"
-  [message]="'¿Desea eliminar el cliente ' + selectedCustomer.fullName + '?'"
-  (confirm)="deleteCustomer(selectedCustomer.id)"
-  (close)="closeDelete()">
-</app-delete-confirm-modal> -->
+<app-delete-customer-modal
+  *ngIf="showDelete"
+  [customer]="selectedCustomer"
+  (confirm)="deleteCustomer($event)"
+  (close)="showDelete = false">
+</app-delete-customer-modal>
+

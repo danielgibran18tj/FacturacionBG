@@ -93,11 +93,10 @@ namespace Infrastructure.Repositories
             return invoice;
         }
 
-        public Task UpdateAsync(Invoice invoice)
+        public async Task UpdateAsync(Invoice invoice)
         {
-            invoice.UpdatedAt = DateTime.UtcNow;
             _context.Invoices.Update(invoice);
-            return Task.CompletedTask;
+            await _context.SaveChangesAsync();
         }
 
         public async Task<string> GenerateInvoiceNumberAsync()
@@ -130,6 +129,8 @@ namespace Infrastructure.Repositories
             DateTime? start = null, DateTime? end = null, decimal? min = null, decimal? max = null, int? idCustomer = null)
         {
             var query = _context.Invoices
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Include(i => i.Customer)
                 .Include(i => i.Seller)
                 .Include(i => i.InvoiceDetails).ThenInclude(d => d.Product)
@@ -151,8 +152,8 @@ namespace Infrastructure.Repositories
             if (end.HasValue) query = query.Where(i => i.InvoiceDate <= end);
             if (min.HasValue) query = query.Where(i => i.Total >= min);
             if (max.HasValue) query = query.Where(i => i.Total <= max);
+            if (!idCustomer.Equals(null)) query = query.Where(i => i.CustomerId == idCustomer);
 
-            query = query.Where(i => i.CustomerId == idCustomer);
 
             // ---- TOTAL ----
             var totalItems = await query.CountAsync();

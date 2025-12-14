@@ -49,7 +49,7 @@ namespace API
                     {
                         Title = "Banco Guayaquil - API",
                         Version = "v1",
-                        Description = "API de autenticacion con JWT para prueba tecnica"
+                        Description = "API de facturacion con JWT para prueba tecnica"
                     });
 
                     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -111,7 +111,8 @@ namespace API
                 // CONFIGURACION DE BASE DE DATOS
                 builder.Services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
-                        builder.Configuration.GetConnectionString("DefaultConnection")
+                        builder.Configuration.GetConnectionString("DefaultConnection"),
+                        sql => sql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
                     ));
 
                 // INYECCION DE DEPENDENCIAS
@@ -131,6 +132,7 @@ namespace API
                 builder.Services.AddScoped<IAuthService, AuthService>();
                 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
                 builder.Services.AddScoped<ICustomerService, CustomerService>();
+                builder.Services.AddScoped<IUserService, UserService>();
                 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
                 builder.Services.AddScoped<IJwtService, JwtService>();
                 builder.Services.AddScoped<IProductService, ProductService>();

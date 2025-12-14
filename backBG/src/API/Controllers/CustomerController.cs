@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Application.DTOs;
 using Application.DTOs.Customer;
+using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -71,6 +72,16 @@ namespace API.Controllers
         {
             var result = await _customerService.GetPagedAsync(request);
             return Ok(result);
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> LogicalDelete(int id)
+        {
+            var success = await _customerService.LogicalDeleteAsync(id);
+            if (!success)
+                return NotFound(new { message = "Customer not found" });
+            return Ok(new { message = "Customer deleted (logical delete)" });
         }
 
     }

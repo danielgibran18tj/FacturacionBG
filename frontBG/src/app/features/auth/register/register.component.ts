@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TokenService } from '../../../core/services/token.service';
 
 
 @Component({
@@ -17,14 +18,27 @@ export class RegisterComponent {
   showPassword = false;
   showConfirmPassword = false;
   errorMessage = '';
+  @Output() close = new EventEmitter<void>();
+  roles: string[] = [];
+  isAdmin = false;
+  availableRoles: string[] = [
+    'Administrator',
+    'Seller',
+    'Customer'
+  ];
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private tokenService: TokenService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.tokenService.clearTokens();
+    }
+
     this.registerForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -39,8 +53,15 @@ export class RegisterComponent {
         Validators.minLength(8),
         Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]/)
       ]],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', Validators.required],
+      roles: [[]]
     }, { validators: this.passwordMatchValidator });
+
+    this.roles = this.tokenService.getUserRoles()
+    if (!this.roles.includes('Administrator')) {
+      this.isAdmin = false;
+      this.registerForm.get('roles')?.setValue(['Customer']);
+    } else this.isAdmin = true;
   }
 
   passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
@@ -106,4 +127,25 @@ export class RegisterComponent {
     const field = this.registerForm.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
+
+  hasAnyRole(roles: string[]): boolean {
+    return roles.some(r => this.roles.includes(r));
+  }
+
+  hasRole(role: string): boolean {
+    return this.roles.includes(role);
+  }
+
+  onRoleChange(role: string, event: any) {
+    const roles = this.registerForm.get('roles')?.value as string[];
+
+    if (event.target.checked) {
+      this.registerForm.get('roles')?.setValue([...roles, role]);
+    } else {
+      this.registerForm.get('roles')?.setValue(
+        roles.filter(r => r !== role)
+      );
+    }
+  }
+
 }

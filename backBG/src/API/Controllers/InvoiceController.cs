@@ -92,7 +92,7 @@ namespace API.Controllers
             var pdfBytes = await _invoiceService.GenerateInvoicePdfAsync(id);
 
             if (pdfBytes == null)
-                return NotFound("Factura no encontrada");
+                return NotFound("Invoice not found");
 
             return File(pdfBytes, "application/pdf", $"Factura-{id}.pdf");
         }

@@ -1,19 +1,23 @@
 import { Component } from '@angular/core';
 import { GenericTableComponent } from "../../../shared/components/generic-table/generic-table.component";
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CustomerService } from '../../../core/services/customer.service';
 import { ActionDefinition, ColumnDefinition } from '../../../core/models/table-generica.model';
+import { EditCustomerModalComponent } from "../edit-customer-modal/edit-customer-modal.component";
+import { CommonModule } from '@angular/common';
+import { Customer } from '../../../core/models/customer.model';
+import { CreateCustomerModalComponent } from "../create-customer-modal/create-customer-modal.component";
+import { DeleteCustomerModalComponent } from "../delete-customer-modal/delete-customer-modal.component";
 
 @Component({
   selector: 'app-customers-list',
-  imports: [GenericTableComponent, FormsModule],
+  imports: [GenericTableComponent, FormsModule, EditCustomerModalComponent, CommonModule, CreateCustomerModalComponent, DeleteCustomerModalComponent],
   templateUrl: './customers-list.component.html',
   styleUrl: './customers-list.component.css'
 })
 export class CustomersListComponent {
 
-  customers: any[] = [];
+  customers: Customer[] = [];
   searchTerm = '';
   page = 1;
   pageSize = 5;
@@ -21,6 +25,8 @@ export class CustomersListComponent {
 
   selectedCustomer: any = null;
   showDelete = false;
+  showEdit = false;
+  isCreateModalOpen = false;
 
   public customerColumns: ColumnDefinition[] = [];
   public customerActions: ActionDefinition[] = [];
@@ -40,22 +46,18 @@ export class CustomersListComponent {
       });
   }
 
+  openCreateCustomer() {
+    this.isCreateModalOpen = true;
+  }
+
+
   handlePageChange(page: number) {
     this.page = page;
     this.loadCustomers();
   }
 
   handleActionClick(event: any) {
-    this.selectedCustomer = event.row;
-
-    if (event.action === 'delete') {
-      this.showDelete = true;
-    }
-
-    if (event.action === 'edit') {
-      // aquí puedes abrir modal de edición
-      console.log('Editar cliente', this.selectedCustomer);
-    }
+    event.action(event.item);
   }
 
   closeDelete() {
@@ -71,7 +73,7 @@ export class CustomersListComponent {
       { key: 'phone', label: 'Teléfono', textAlign: 'left' },
       { key: 'email', label: 'Email', textAlign: 'left' },
       {
-        key: 'hasUserAccount',
+        key: 'username',
         label: 'Usuario',
         type: 'boolean',
         textAlign: 'center'
@@ -79,7 +81,7 @@ export class CustomersListComponent {
       {
         key: 'isActive',
         label: 'Estado',
-        type: 'status',
+        type: 'isActive',
         textAlign: 'center'
       }
     ];
@@ -90,23 +92,35 @@ export class CustomersListComponent {
         icon: 'bi-pencil',
         class: 'btn-secondary',
         action: (customer: any) => this.openEdit(customer)
-      },
-      {
-        label: 'Eliminar',
-        icon: 'bi-trash',
-        class: 'btn-danger',
-        action: (customer: any) => this.openDelete(customer)
+      // },
+      // {
+      //   label: 'Eliminar',
+      //   icon: 'bi-trash',
+      //   class: 'btn-danger',
+      //   action: (customer: any) => this.openDelete(customer)
       }
     ];
   }
 
   openEdit(customer: any): void {
-    throw new Error('Method not implemented.');
+    this.selectedCustomer = customer;
+    this.showEdit = true;
   }
 
   openDelete(customer: any): void {
-    throw new Error('Method not implemented.');
+    this.selectedCustomer = customer;
+    this.showDelete = true;  }
+
+  closeEdit() {
+    this.showEdit = false;
+    this.selectedCustomer = null;
   }
 
+  deleteCustomer(customerId: number) {
+    this.customerService.delete(customerId).subscribe(() => {
+      this.showDelete = false;
+      this.loadCustomers();
+    });
+  }
 
 }

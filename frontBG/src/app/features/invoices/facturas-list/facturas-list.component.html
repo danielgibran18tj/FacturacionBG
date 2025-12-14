@@ -4,7 +4,10 @@
       <i class="bi bi-receipt"></i> Facturas
     </h5>
 
-    <button class="btn btn-primary btn-sm" (click)="openCreateInvoice()" style="background:#d4145a; border-color:#d4145a;">
+    <button class="btn btn-primary btn-sm" 
+            *ngIf="rolesSession.includes('Administrator') || rolesSession.includes('Seller')"
+            (click)="openCreateInvoice()" 
+            style="background:#d4145a; border-color:#d4145a;">
       <i class="bi bi-file-plus"></i> Nueva Factura
     </button>
   </div>
@@ -73,8 +76,11 @@
 </app-invoice-details-modal>
 
 <!-- Modal eliminar -->
-<app-delete-confirm-modal *ngIf="selectedInvoice && showDelete" [invoice]="selectedInvoice"
-  (confirm)="deleteInvoice($event)" (close)="closeDelete()">
+<app-delete-confirm-modal 
+  *ngIf="selectedInvoice && showDelete" 
+  [invoice]="selectedInvoice"
+  (confirm)="deleteInvoice($event)" 
+  (close)="closeDelete()">
 </app-delete-confirm-modal>
 
 <app-create-invoice-modal

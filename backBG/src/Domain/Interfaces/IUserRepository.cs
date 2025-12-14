@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs;
+using Domain.Entities;
 
 namespace Domain.Interfaces
 {
@@ -10,6 +11,7 @@ namespace Domain.Interfaces
         Task<User?> GetByIdWithRolesAsync(int id);
         Task<bool> ExistsByUsernameAsync(string username);
         Task<bool> ExistsByEmailAsync(string email);
+        Task<PagedResult<User>> GetPagedAsync(int page, int pageSize, bool IsActive, string? search = null);
         Task<User> AddAsync(User user);
         Task UpdateAsync(User user);
         Task<List<User>> GetAllAsync();

@@ -8,6 +8,7 @@ import { DeleteConfirmModalComponent } from "../delete-confirm-modal/delete-conf
 import { ActionDefinition, ColumnDefinition } from '../../../core/models/table-generica.model';
 import { GenericTableComponent } from "../../../shared/components/generic-table/generic-table.component";
 import { CreateInvoiceModalComponent } from "../create-invoice-modal/create-invoice-modal.component";
+import { TokenService } from '../../../core/services/token.service';
 
 @Component({
   selector: 'app-facturas-list',
@@ -18,6 +19,7 @@ import { CreateInvoiceModalComponent } from "../create-invoice-modal/create-invo
 export class FacturasListComponent {
 
   invoices: Invoice[] = [];
+  rolesSession: string[] = [];
 
   // Variables para modales
   selectedInvoice!: Invoice | null;
@@ -39,11 +41,12 @@ export class FacturasListComponent {
   minAmount: number | null = null;
   maxAmount: number | null = null;
 
-  constructor(private invoiceService: InvoiceService) { }
+  constructor(private invoiceService: InvoiceService, private tokenService: TokenService) { }
 
   ngOnInit(): void {
     this.defineTableStructure();
     this.loadInvoices();
+    this.rolesSession = this.tokenService.getUserRoles()
   }
 
   loadInvoices() {

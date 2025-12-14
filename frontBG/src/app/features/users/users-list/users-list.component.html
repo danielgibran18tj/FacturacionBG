@@ -1,0 +1,60 @@
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+    <h5 class="m-0 fw-bold">
+      <i class="bi bi-people"></i> Usuarios
+    </h5>
+
+    <button class="btn btn-primary btn-sm"
+            *ngIf="rolesSession.includes('Administrator')"
+            style="background:#d4145a; border-color:#d4145a;"
+            (click)="openCreateUser()">
+      <i class="bi bi-plus-circle"></i> Nuevo Usuario
+    </button>
+  </div>
+
+  <div class="card-body">
+    <!-- Búsqueda -->
+    <div class="input-group mb-3">
+      <span class="input-group-text bg-light">
+        <i class="bi bi-search"></i>
+      </span>
+      <input [(ngModel)]="searchTerm"
+             class="form-control"
+             placeholder="Buscar usuario..."
+             (keyup.enter)="loadUsers()">
+
+      <button class="btn btn-outline-primary" (click)="loadUsers()">
+        Buscar
+      </button>
+    </div>
+
+    <app-generic-table
+      [data]="users"
+      [columns]="userColumns"
+      [actions]="userActions"
+      [totalPages]="totalPages"
+      [currentPage]="page"
+      (pageChange)="handlePageChange($event)"
+      (actionClick)="handleActionClick($event)">
+    </app-generic-table>
+  </div>
+</div>
+
+<!-- Modales -->
+<app-register
+  *ngIf="showCreateUser && 
+    (rolesSession.includes('Administrator') || rolesSession.includes('Seller'))"
+  (close)="showCreateUser = false"/>
+
+<!-- <app-create-user-modal
+  *ngIf="showCreateUser"
+  (save)="createUser($event)"
+  (close)="showCreateUser = false">
+</app-create-user-modal>
+
+<app-edit-user-modal
+  *ngIf="showEditUser"
+  [user]="selectedUser"
+  (update)="updateUser($event)"
+  (close)="showEditUser = false">
+</app-edit-user-modal> -->
