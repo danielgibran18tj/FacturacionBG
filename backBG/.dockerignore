@@ -1,0 +1,15 @@
+# Directorios de compilación
+**/bin/
+**/obj/
+**/out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Otros
+**/node_modules/
+**/.git/
+**/.gitignore
+**/README.md

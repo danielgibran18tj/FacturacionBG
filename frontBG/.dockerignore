@@ -1,0 +1,17 @@
+# Dependencias
+node_modules/
+npm-debug.log*
+
+# Compilación
+dist/
+.angular/
+
+# IDE
+.vscode/
+.idea/
+
+# Otros
+.git/
+.gitignore
+README.md
+*.md

@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: bg-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=password123! 
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - bg-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P password123! -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    image: danielgibran18tj/facturacionbg-backend:latest 
+    container_name: bg-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=BillingDB;User Id=sa;Password=password123!;TrustServerCertificate=True;
+    ports:
+      - "5000:80"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - bg-network
+    restart: unless-stopped
+
+  frontend:
+    image: danielgibran18tj/facturacionbg-frontend:latest 
+    container_name: bg-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - bg-network
+    restart: unless-stopped
+
+networks:
+  bg-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:
+    driver: local

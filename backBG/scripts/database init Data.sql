@@ -3,6 +3,7 @@
 -- SEED DATA - BANCO GUAYAQUIL
 -- Datos Iniciales del Sistema
 -- =============================================
+USE [BillingDB]
 
 
 INSERT INTO [dbo].[SystemSettings] ([SettingKey], [SettingValue], [Description], [DataType], [IsSystem])

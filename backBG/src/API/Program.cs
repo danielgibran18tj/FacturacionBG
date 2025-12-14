@@ -218,7 +218,7 @@ namespace API
                     }
                     else
                     {
-                        path = Path.Combine(AppContext.BaseDirectory, "scripts", "database BillingDB.sql");
+                        path = Path.Combine(AppContext.BaseDirectory, "scripts", "database init Data.sql");
                     }
 
                     if (!File.Exists(path))
@@ -237,7 +237,7 @@ namespace API
 
                     await context.Database.ExecuteSqlRawAsync(script);
 
-                    Log.Information("Datos iniciales de tienda creados");
+                    Log.Information("Datos iniciales de facturacion creados");
 
                 }
                 else
