@@ -20,8 +20,7 @@ VALUES
     
     -- Formato de Factura
     ('INVOICE_NUMBER_LENGTH', '6', 'Longitud del número de factura (ej: 000001)', 'number', 1),
-    ('INVOICE_FOOTER_TEXT', 'Gracias por su compra - Banco Guayaquil', 'Texto al pie de la factura', 'string', 0),
-
+    ('INVOICE_FOOTER_TEXT', 'Gracias por su compra - Banco Guayaquil', 'Texto al pie de la factura', 'string', 0)
 
 
 SET IDENTITY_INSERT [dbo].[Roles] ON;
