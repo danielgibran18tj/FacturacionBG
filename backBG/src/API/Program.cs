@@ -119,7 +119,6 @@ namespace API
                 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
                 builder.Services.AddAutoMapper(typeof(MapperProfile));
 
-                builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
                 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
                 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
                 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
@@ -138,9 +137,6 @@ namespace API
                 builder.Services.AddScoped<IProductService, ProductService>();
                 builder.Services.AddScoped<ISystemSettingService, SystemSettingService>();
                 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-                builder.Services.Configure<CompanySettings>(builder.Configuration.GetSection("CompanySettings"));
-
 
                 // CONFIGURACION DE CORS
                 builder.Services.AddCors(options =>

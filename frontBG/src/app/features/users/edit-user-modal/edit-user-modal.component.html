@@ -1,0 +1,74 @@
+<div class="modal fade show"
+     tabindex="-1"
+     aria-modal="true"
+     style="display: block;"
+     (click)="$event.target === $event.currentTarget && close.emit()">
+
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content shadow">
+
+      <!-- HEADER -->
+      <div class="modal-header text-white" style="background:#0d6efd;">
+        <h5 class="modal-title">
+          <i class="bi bi-person-lines-fill me-1"></i>
+          Editar Usuario
+        </h5>
+        <button type="button"
+                class="btn-close btn-close-white"
+                aria-label="Cerrar"
+                (click)="close.emit()">
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+        <div class="row g-3">
+
+          <div class="col-md-12">
+            <label class="form-label fw-bold">Email</label>
+            <input type="email"
+                   class="form-control"
+                   [(ngModel)]="model.email">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Nombre</label>
+            <input class="form-control"
+                   [(ngModel)]="model.firstName">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Apellido</label>
+            <input class="form-control"
+                   [(ngModel)]="model.lastName">
+          </div>
+
+          <!-- ESTADO -->
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Estado</label>
+            <select class="form-select"
+                    [(ngModel)]="model.isActive">
+              <option [ngValue]="true">Activo</option>
+              <option [ngValue]="false">Inactivo</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="close.emit()">
+          Cancelar
+        </button>
+        <button class="btn btn-primary" (click)="onUpdate()">
+          <i class="bi bi-save me-1"></i>
+          Guardar Cambios
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade show"></div>

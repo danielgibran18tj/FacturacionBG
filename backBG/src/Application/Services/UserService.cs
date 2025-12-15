@@ -137,7 +137,6 @@ namespace Application.Services
                 throw new KeyNotFoundException($"Usuario con Id {id} no encontrado.");
             }
 
-            existingUser.Username = user.Username;
             existingUser.Email = user.Email;
             existingUser.FirstName = user.FirstName;
             existingUser.LastName = user.LastName;

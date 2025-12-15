@@ -16,7 +16,6 @@ public class ApplicationDbContext : DbContext
     public virtual DbSet<Role> Roles { get; set; }
 
 
-    public virtual DbSet<AuditLog> AuditLogs { get; set; }
     public virtual DbSet<Customer> Customers { get; set; }
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<Invoice> Invoices { get; set; }
@@ -29,24 +28,6 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<AuditLog>(entity =>
-        {
-            entity.ToTable("AuditLogs");
-
-            entity.HasIndex(e => e.Action, "IX_AuditLogs_Action");
-            entity.HasIndex(e => e.EntityName, "IX_AuditLogs_EntityName");
-            entity.HasIndex(e => e.Timestamp, "IX_AuditLogs_Timestamp");
-            entity.HasIndex(e => e.UserId, "IX_AuditLogs_UserId");
-
-            entity.Property(e => e.Action).HasMaxLength(100);
-            entity.Property(e => e.EntityName).HasMaxLength(100);
-            entity.Property(e => e.Ipaddress)
-                .HasMaxLength(50)
-                .HasColumnName("IPAddress");
-            entity.Property(e => e.Timestamp).HasDefaultValueSql("(getutcdate())");
-            entity.Property(e => e.UserAgent).HasMaxLength(300);
-        });
 
         modelBuilder.Entity<Customer>(entity =>
         {

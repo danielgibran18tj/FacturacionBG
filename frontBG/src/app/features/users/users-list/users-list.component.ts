@@ -5,10 +5,11 @@ import { UserService } from '../../../core/services/user.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TokenService } from '../../../core/services/token.service';
+import { EditUserModalComponent } from "../edit-user-modal/edit-user-modal.component";
 
 @Component({
   selector: 'app-users-list',
-  imports: [RegisterComponent, GenericTableComponent, FormsModule, CommonModule],
+  imports: [RegisterComponent, GenericTableComponent, FormsModule, CommonModule, EditUserModalComponent],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.css'
 })
@@ -34,12 +35,12 @@ export class UsersListComponent {
   showCreateUser: boolean = false;
 
   constructor(private userService: UserService, private tokenService: TokenService) {
+    this.rolesSession = this.tokenService.getUserRoles()
     this.defineTableStructure();
     this.loadUsers();
   }
 
   ngOnInit(): void {
-    this.rolesSession = this.tokenService.getUserRoles()
     console.log(this.rolesSession);
   }
 
@@ -64,14 +65,14 @@ export class UsersListComponent {
       }
     ];
 
-    this.userActions = [
+    this.userActions = this.rolesSession.includes('Administrator') ? [
       {
         label: 'Editar',
         icon: 'bi-pencil',
         class: 'btn-secondary',
         action: (user: any) => this.openEdit(user)
       }
-    ];
+    ] : [];
   }
 
   // Cargar usuarios (paginado)

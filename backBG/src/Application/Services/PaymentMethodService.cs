@@ -1,6 +1,8 @@
 ﻿using Application.Common.Interfaces;
 using Application.DTOs.PaymentMethod;
+using Application.DTOs.Product;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -20,6 +22,14 @@ namespace Application.Services
             _paymentMethodRepository = paymentMethodRepository;
             _mapper = mapper;
             _logger = logger;
+        }
+
+        public async Task<PaymentMethodDto> GetByIdAsync(int id)
+        {
+            var paymentMethod = await _paymentMethodRepository.GetByIdAsync(id)
+                ?? throw new KeyNotFoundException("Metodo de pago no encontrado");
+
+            return _mapper.Map<PaymentMethodDto>(paymentMethod);
         }
 
         public async Task<List<PaymentMethodDto>> GetAllAsync()

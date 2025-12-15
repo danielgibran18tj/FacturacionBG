@@ -8,21 +8,8 @@ USE [BillingDB]
 
 INSERT INTO [dbo].[SystemSettings] ([SettingKey], [SettingValue], [Description], [DataType], [IsSystem])
 VALUES 
-    -- Impuestos y Moneda
+    -- Impuestos
     ('IVA_PERCENTAGE', '15.00', 'Porcentaje de IVA a aplicar en facturas', 'decimal', 1),
-    ('CURRENCY_SYMBOL', '$', 'Símbolo de la moneda', 'string', 1),
-    ('CURRENCY_CODE', 'USD', 'Código ISO de la moneda (USD, EUR, etc)', 'string', 1),
-    ('CURRENCY_NAME', 'US Dollar', 'Nombre completo de la moneda', 'string', 1),
-    
-    -- Formato de Factura
-    ('INVOICE_PREFIX', 'FACT-', 'Prefijo para número de factura', 'string', 1),
-    ('INVOICE_NUMBER_LENGTH', '6', 'Longitud del número de factura (ej: 000001)', 'number', 1),
-    ('INVOICE_FOOTER_TEXT', 'Gracias por su compra - Banco Guayaquil', 'Texto al pie de la factura', 'string', 0),
-    
-    -- Configuraciones de Negocio
-    ('LOW_STOCK_ALERT', '10', 'Cantidad mínima de stock para generar alerta', 'number', 0),
-    ('ALLOW_NEGATIVE_STOCK', 'false', 'Permitir ventas con stock negativo', 'boolean', 0),
-    ('MAX_INVOICE_ITEMS', '50', 'Máximo número de productos por factura', 'number', 0),
     
     -- Información de la Empresa
     ('COMPANY_NAME', 'Banco Guayaquil', 'Nombre de la empresa', 'string', 1),
@@ -31,10 +18,9 @@ VALUES
     ('COMPANY_PHONE', '042-555-0000', 'Teléfono de la empresa', 'string', 0),
     ('COMPANY_EMAIL', 'contacto@bancobg.com', 'Email de la empresa', 'string', 0),
     
-    -- Configuraciones de Usuario
-    ('SESSION_TIMEOUT_MINUTES', '30', 'Tiempo de sesión inactiva en minutos', 'number', 0),
-    ('PASSWORD_MIN_LENGTH', '8', 'Longitud mínima de contraseña', 'number', 1),
-    ('REQUIRE_STRONG_PASSWORD', 'true', 'Requerir contraseñas fuertes', 'boolean', 1);
+    -- Formato de Factura
+    ('INVOICE_NUMBER_LENGTH', '6', 'Longitud del número de factura (ej: 000001)', 'number', 1),
+    ('INVOICE_FOOTER_TEXT', 'Gracias por su compra - Banco Guayaquil', 'Texto al pie de la factura', 'string', 0),
 
 
 

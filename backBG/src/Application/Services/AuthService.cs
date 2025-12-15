@@ -11,9 +11,8 @@ namespace Application.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IRoleRepository _roleRepository;
         private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IJwtService _jwtService;
@@ -24,7 +23,6 @@ namespace Application.Services
             IUserService userService,
             IMapper mapper,
             IRefreshTokenRepository refreshTokenRepository,
-            IRoleRepository roleRepository,
             IJwtService jwtService,
             IOptions<JwtSettings> jwtSettings)
         {
@@ -32,7 +30,6 @@ namespace Application.Services
             _refreshTokenRepository = refreshTokenRepository;
             _mapper = mapper;
             _userService = userService;
-            _roleRepository = roleRepository;
             _jwtService = jwtService;
             _jwtSettings = jwtSettings.Value;
         }
@@ -40,7 +37,7 @@ namespace Application.Services
         // LOGIN
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
         {
-            var user = await _userRepository.GetByUsernameAsync(request.Username);
+            var user = await _userService.GetByUsernameAsync(request.Username);
             if (user == null || !user.IsActive)
                 throw new UnauthorizedAccessException("Usuario o contraseña incorrectos");
 

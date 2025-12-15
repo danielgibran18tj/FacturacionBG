@@ -46,15 +46,10 @@
     (rolesSession.includes('Administrator') || rolesSession.includes('Seller'))"
   (close)="showCreateUser = false"/>
 
-<!-- <app-create-user-modal
-  *ngIf="showCreateUser"
-  (save)="createUser($event)"
-  (close)="showCreateUser = false">
-</app-create-user-modal>
-
 <app-edit-user-modal
-  *ngIf="showEditUser"
-  [user]="selectedUser"
-  (update)="updateUser($event)"
-  (close)="showEditUser = false">
-</app-edit-user-modal> -->
+  *ngIf="showEditUser && rolesSession.includes('Administrator')"
+  [userId]="selectedUser.id"
+  [model]="selectedUser"
+  (close)="showEditUser = false"
+  (updated)="loadUsers()">
+</app-edit-user-modal>

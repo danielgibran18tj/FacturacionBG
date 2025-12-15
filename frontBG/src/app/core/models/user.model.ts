@@ -6,3 +6,10 @@ export interface User {
   lastName?: string;
   fullName?: string;
 }
+
+export interface UpdateUserRequest {
+  email: string;
+  firstName: string;
+  lastName: string;
+  isActive: boolean;
+}

@@ -1,6 +1,5 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Mappings;
-using Application.DTOs;
 using Application.DTOs.Invoice;
 using Domain.DTOs;
 using Domain.Entities;
@@ -15,49 +14,38 @@ using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Application.Services
 {
     public class InvoiceService : IInvoiceService
     {
         private readonly IInvoiceRepository _invoiceRepo;
-        private readonly ICustomerRepository _customerRepo;
         private readonly ICustomerService _customerService;
-        private readonly IUserRepository _userRepo;
         private readonly IUserService _userService;
-        private readonly IProductRepository _productRepo;
-        private readonly IPaymentMethodRepository _paymentRepo;
+        private readonly IPaymentMethodService _paymentMethodService;
+        private readonly IProductService _productService;
         private readonly ISystemSettingService _settings;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<InvoiceService> _logger;
-        private readonly CompanySettings _companySettings;
 
         public InvoiceService(
             IInvoiceRepository invoiceRepo,
-            ICustomerRepository customerRepo,
             ICustomerService customerService,
-            IUserRepository userRepo,
             IUserService userService,
-            IProductRepository productRepo,
-            IPaymentMethodRepository paymentRepo,
+            IPaymentMethodService paymentMethodService,
+            IProductService productService,
             ISystemSettingService settings,
             IUnitOfWork unitOfWork,
-            ILogger<InvoiceService> logger,
-            IOptions<CompanySettings> companySettings)
-
+            ILogger<InvoiceService> logger)
         {
             _invoiceRepo = invoiceRepo;
-            _customerRepo = customerRepo;
             _customerService = customerService;
-            _userRepo = userRepo;
             _userService = userService;
-            _productRepo = productRepo;
-            _paymentRepo = paymentRepo;
+            _productService = productService;
+            _paymentMethodService = paymentMethodService;
             _settings = settings;
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _companySettings = companySettings.Value;
         }
 
         // CREAR FACTURA CON TRANSACCIÓN CLEAN ARCHITECTURE
@@ -67,10 +55,10 @@ namespace Application.Services
 
             try
             {
-                var customer = await _customerRepo.GetByIdAsync(dto.CustomerId)
+                var customer = await _customerService.GetByIdAsync(dto.CustomerId)
                     ?? throw new KeyNotFoundException("Cliente no encontrado");
 
-                var seller = await _userRepo.GetByIdAsync(dto.SellerId)
+                var seller = await _userService.GetByIdAsync(dto.SellerId)
                     ?? throw new KeyNotFoundException("Vendedor no encontrado");
 
                 var ivaPercent = await _settings.GetIvaAsync();
@@ -94,7 +82,7 @@ namespace Application.Services
                 // Procesar Detalles
                 foreach (var detail in dto.Details)
                 {
-                    var product = await _productRepo.GetByIdAsync(detail.ProductId)
+                    var product = await _productService.GetByIdAsync(detail.ProductId)
                         ?? throw new KeyNotFoundException($"Producto no encontrado: {detail.ProductId}");
 
                     if (product.Stock < detail.Quantity)
@@ -115,7 +103,7 @@ namespace Application.Services
                     await _invoiceRepo.AddDetailAsync(d);
 
                     // Restar stock
-                    await _productRepo.UpdateStockAsync(product.Id, -detail.Quantity);
+                    await _productService.UpdateStockAsync(product.Id, -detail.Quantity);
                 }
 
                 await _unitOfWork.SaveChangesAsync();
@@ -130,7 +118,7 @@ namespace Application.Services
                 // Procesar Pagos
                 foreach (var p in dto.Payments)
                 {
-                    var method = await _paymentRepo.GetByIdAsync(p.PaymentMethodId)
+                    var method = await _paymentMethodService.GetByIdAsync(p.PaymentMethodId)
                         ?? throw new KeyNotFoundException("Método de pago no encontrado");
 
                     var pay = new InvoicePaymentMethod
@@ -236,11 +224,11 @@ namespace Application.Services
 
             var dto = invoice.ToDto();
 
-            return GeneratePdf(dto);
+            return await GeneratePdf(dto);
         }
 
 
-        private byte[] GeneratePdf(InvoiceDto invoice)
+        private async Task<byte[]> GeneratePdf(InvoiceDto invoice)
         {
             using var ms = new MemoryStream();
 
@@ -255,17 +243,19 @@ namespace Application.Services
 
             doc.SetFont(font);
 
+            var settingsComp = await _settings.GetAllAsync();
+
             // ---------- ENCABEZADO ----------
-            var header = new Paragraph(_companySettings.CompanyName)
+            var header = new Paragraph(settingsComp.First(sc => sc.Key == "COMPANY_NAME").Value)
                 .SetFont(bold)
                 .SetFontSize(18)
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetMarginBottom(10);
 
             var subHeader = new Paragraph(
-                "RUC: " + _companySettings.Ruc + 
-                "\nTel: " + _companySettings.Tel +
-                "\nCorreo: " + _companySettings.Correo)
+                "RUC: " + settingsComp.First(sc => sc.Key == "COMPANY_RUC").Value + 
+                "\nTel: " + settingsComp.First(sc => sc.Key == "COMPANY_PHONE").Value +
+                "\nCorreo: " + settingsComp.First(sc => sc.Key == "COMPANY_EMAIL").Value)
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontSize(10)
                 .SetMarginBottom(20);
@@ -314,7 +304,7 @@ namespace Application.Services
             totals.AddCell(CellRight("Subtotal:", bold));
             totals.AddCell(CellRight(invoice.Subtotal.ToString("C2")));
 
-            totals.AddCell(CellRight("IVA 12%:", bold));
+            totals.AddCell(CellRight($"IVA {settingsComp.First(sc => sc.Key == "IVA_PERCENTAGE").Value}%:", bold));
             totals.AddCell(CellRight(invoice.TaxIva.ToString("C2")));
 
             totals.AddCell(CellRight("TOTAL:", bold, 12));

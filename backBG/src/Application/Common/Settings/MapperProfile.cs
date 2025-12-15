@@ -13,7 +13,16 @@ namespace Application.Common.Settings
         public MapperProfile()
         {
             CreateMap<PaymentMethod, PaymentMethodDto>();
-            CreateMap<Product, ProductDto>();
+            CreateMap<ProductDto, Product>();
+            CreateMap<CreateProductDto, Product>();
+            CreateMap<PaymentMethodDto, PaymentMethod>();
+            CreateMap<PaymentMethod, PaymentMethodDto>();
+
+            CreateMap<Product, ProductDto>()
+            .ForMember(dest => dest.IsLowStock,
+                opt => opt.MapFrom(src =>
+                    src.MinStock.HasValue && src.Stock <= src.MinStock.Value
+                ));
 
             CreateMap<Customer, CustomerDto>()
                 .ForMember(dest => dest.HasUserAccount,

@@ -42,15 +42,6 @@ namespace API.Controllers
         }
 
 
-        /// Obtener símbolo de moneda
-        [HttpGet("currency")]
-        [AllowAnonymous]
-        public async Task<ActionResult<string>> GetCurrency()
-        {
-            return Ok(await _service.GetCurrencySymbolAsync());
-        }
-
-
         /// Actualizar una configuración
         [HttpPut("{key}")]
         [Authorize(Roles = "Administrator")]

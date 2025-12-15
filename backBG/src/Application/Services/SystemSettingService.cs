@@ -50,12 +50,6 @@ namespace Application.Services
             throw new FormatException($"El valor '{value}' configurado en 'IVA_PERCENTAGE' no es un número válido.");
         }
 
-        // Símbolo de moneda
-        public async Task<string> GetCurrencySymbolAsync()
-        {
-            return await GetRawAsync("CURRENCY_SYMBOL") ?? "$";
-        }
-
         public async Task<List<SystemSettingDto>> GetAllAsync()
         {
             var settings = await _repository.GetAllAsync();

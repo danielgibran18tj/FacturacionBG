@@ -5,8 +5,10 @@ using Application.DTOs.Customer;
 using Application.DTOs.Product;
 using AutoMapper;
 using Domain.DTOs;
+using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.Extensions.Logging;
+using static iText.IO.Util.IntHashtable;
 
 namespace Application.Services
 {
@@ -31,13 +33,13 @@ namespace Application.Services
             var product = await _repository.GetByIdAsync(id)
                 ?? throw new KeyNotFoundException("Producto no encontrado");
 
-            return product.ToDto();
+            return _mapper.Map<ProductDto>(product);
         }
 
         public async Task<List<ProductDto>> GetAllAsync(bool includeInactive = false)
         {
             var products = await _repository.GetAllAsync(includeInactive);
-            return products.Select(p => p.ToDto()).ToList();
+            return products.Select(p => _mapper.Map<ProductDto>(p)).ToList();
         }
 
         public async Task<ProductDto> CreateAsync(CreateProductDto dto)
@@ -45,12 +47,12 @@ namespace Application.Services
             if (await _repository.ExistsByCodeAsync(dto.Code))
                 throw new InvalidOperationException("El código ya existe");
 
-            var entity = dto.ToEntity();
+            var entity = _mapper.Map<Product>(dto);
 
             await _repository.AddAsync(entity);
             await _repository.SaveChangesAsync();
 
-            return entity.ToDto();
+            return _mapper.Map<ProductDto>(entity);
         }
 
         public async Task<ProductDto> UpdateAsync(int id, UpdateProductDto dto)
@@ -63,7 +65,7 @@ namespace Application.Services
             await _repository.UpdateAsync(product);
             await _repository.SaveChangesAsync();
 
-            return product.ToDto();
+            return _mapper.Map<ProductDto>(product);
         }
 
         public async Task UpdateStockAsync(int id, int quantityChange)
@@ -75,7 +77,7 @@ namespace Application.Services
         public async Task<List<ProductDto>> GetLowStockAsync()
         {
             var lowStock = await _repository.GetLowStockProductsAsync();
-            return lowStock.Select(p => p.ToDto()).ToList();
+            return lowStock.Select(p => _mapper.Map<ProductDto>(p)).ToList();
         }
 
         public async Task<PagedResult<ProductDto>> GetPagedAsync(PageRequestDto request)

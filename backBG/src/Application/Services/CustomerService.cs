@@ -12,19 +12,19 @@ namespace Application.Services
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
         private readonly ILogger<CustomerService> _logger;
         private readonly IMapper _mapper;
 
         public CustomerService(
             ICustomerRepository customerRepository,
+            IUserService userService,
             IMapper mapper,
-            IUserRepository userRepository,
             ILogger<CustomerService> logger)
         {
             _customerRepository = customerRepository;
             _mapper = mapper;
-            _userRepository = userRepository;
+            _userService = userService;
             _logger = logger;
         }
 
@@ -90,7 +90,7 @@ namespace Application.Services
             var customer = await _customerRepository.GetByIdAsync(customerId)
                 ?? throw new KeyNotFoundException("Cliente no encontrado");
 
-            var user = await _userRepository.GetByIdAsync(userId)
+            var user = await _userService.GetByIdAsync(userId)
                 ?? throw new KeyNotFoundException("Usuario no encontrado");
 
             customer.UserId = user.Id;
