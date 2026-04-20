@@ -139,14 +139,19 @@ namespace API
                 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
                 // CONFIGURACION DE CORS
+                var allowedOrigins = builder.Configuration
+                    .GetSection("Cors:AllowedOrigins")
+                    .Get<string[]>();
+
                 builder.Services.AddCors(options =>
                 {
                     options.AddPolicy("AllowAngular", policy =>
                     {
-                        policy.WithOrigins("http://localhost:4200")
-                              .AllowAnyHeader()
-                              .AllowAnyMethod()
-                              .AllowCredentials();
+                        policy
+                            .WithOrigins(allowedOrigins!)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
                     });
                 });
 
@@ -175,7 +180,7 @@ namespace API
 
                 app.UseMiddleware<ExceptionMiddleware>();
 
-                app.UseHttpsRedirection();
+                // app.UseHttpsRedirection();
                 app.UseCors("AllowAngular");
                 app.UseAuthentication();
                 app.UseAuthorization();

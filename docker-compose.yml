@@ -38,6 +38,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=BillingDB;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;
+      - Cors__AllowedOrigins__0=http://localhost:4200
     ports:
       - "5000:80"
     depends_on:
