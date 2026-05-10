@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: facturacionbg-backend:latest
+        ports:
+        - containerPort: 5000
+        imagePullPolicy: Never
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bg-secrets
+              key: DB_PASSWORD
+        - name: ConnectionStrings__DefaultConnection
+          value: "Server=sqlserver;Database=BillingDB;User Id=sa;Password=$(DB_PASSWORD);TrustServerCertificate=True;"
+        envFrom:
+            # Carga todo el ConfigMap como variables de entorno
+            - configMapRef:
+                name: auth-config
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+
+# COMANDOS PARA VER VARIABLES DE ENTORNO EN EL POD:
+# kubectl exec -it pod/backend-deployment-f478bcc9f-k2zrw -- env | grep -i password
+# kubectl exec -it pod/backend-deployment-f478bcc9f-k2zrw -- env | grep -i Cors__AllowedOrigins__1
+
+# Comando para ver logs del pod:
+# kubectl logs backend-deployment-546c8bc5df-92g2n --previous
